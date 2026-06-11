@@ -134,16 +134,16 @@ export default function Laporan() {
   const rp = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
 
   return (
-    <div className="space-y-6 px-4 pb-20 pt-6">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Analitik Usaha</p>
-          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
-            <BarChart3 className="h-5 w-5 text-primary" />
+    <div className="space-y-6 px-4 pb-24 pt-6">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/75">Analitik Usaha</p>
+          <h1 className="break-words pb-1 text-4xl font-extrabold leading-[1.15] tracking-tight md:text-5xl md:leading-[1.15]">
             Laporan
           </h1>
+          <p className="text-sm font-medium text-muted-foreground">Pantau penjualan, profit, dan pengeluaran toko.</p>
         </div>
-        <Button size="sm" variant="outline" className="h-10 gap-1.5 rounded-full bg-card/80 px-4 shadow-soft" onClick={() => setExportOpen(true)}>
+        <Button size="sm" variant="outline" className="h-10 shrink-0 gap-1.5 rounded-full bg-card/80 px-4 shadow-soft" onClick={() => setExportOpen(true)}>
           <Download className="h-4 w-4" /> Export
         </Button>
       </div>
@@ -190,35 +190,31 @@ export default function Laporan() {
         </Card>
       )}
 
-      <div className="grid grid-cols-3 gap-2.5">
-        <Card className="border-border/70 shadow-soft">
-          <CardContent className="p-3 text-center">
-            <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <ShoppingCart className="h-4 w-4" />
+      <Card className="overflow-hidden border-primary/30 bg-[radial-gradient(circle_at_85%_30%,hsl(var(--primary)/0.78),transparent_18rem),linear-gradient(135deg,hsl(var(--primary)),hsl(var(--primary)/0.82))] text-primary-foreground shadow-none">
+        <CardContent className="relative min-h-[156px] p-6">
+          <div className="absolute -bottom-10 right-0 h-24 w-72 rounded-[100%] border-t border-white/25 bg-[radial-gradient(circle,hsl(0_0%_100%/0.28)_1px,transparent_1.5px)] [background-size:13px_13px] opacity-60" />
+          <div className="relative flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary-foreground/85">Ringkasan Periode</p>
+              <p className="mt-4 text-4xl font-extrabold leading-none tracking-tight drop-shadow md:text-5xl">{rp(totalSales)}</p>
+              <div className="mt-5 flex max-w-full flex-nowrap items-center gap-2 overflow-hidden text-xs font-bold text-primary-foreground/90">
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/25 bg-white/12 px-3 py-1.5 backdrop-blur-sm" title={`${txCount} transaksi`}>
+                  <ShoppingCart className="h-3.5 w-3.5" /> {txCount}
+                </span>
+                <span className="inline-flex min-w-0 shrink items-center gap-1.5 rounded-full border border-white/25 bg-white/12 px-3 py-1.5 backdrop-blur-sm" title={`Profit ${rp(totalProfit)}`}>
+                  <TrendingUp className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{rp(totalProfit)}</span>
+                </span>
+                <span className="inline-flex min-w-0 shrink items-center gap-1.5 rounded-full border border-white/25 bg-white/12 px-3 py-1.5 backdrop-blur-sm" title={`Pengeluaran ${rp(totalExpenses)}`}>
+                  <Wallet className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">{rp(totalExpenses)}</span>
+                </span>
+              </div>
             </div>
-            <p className="text-lg font-extrabold tracking-tight">{txCount}</p>
-            <p className="text-[10px] text-muted-foreground">Transaksi</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/70 shadow-soft">
-          <CardContent className="p-3 text-center">
-            <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
-              <TrendingUp className="h-4 w-4" />
+            <div className="mt-4 rounded-full border border-white/25 bg-white/15 p-4 backdrop-blur-sm">
+              <BarChart3 className="h-7 w-7" />
             </div>
-            <p className="text-sm font-extrabold tracking-tight">{rp(totalSales)}</p>
-            <p className="text-[10px] text-muted-foreground">Penjualan</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/70 shadow-soft">
-          <CardContent className="p-3 text-center">
-            <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10 text-accent">
-              <TrendingUp className="h-4 w-4" />
-            </div>
-            <p className="text-sm font-extrabold tracking-tight">{rp(totalProfit)}</p>
-            <p className="text-[10px] text-muted-foreground">Profit</p>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {period === 'daily' && (
         <Card className="border-border/70 shadow-soft">

@@ -157,15 +157,15 @@ export default function Produk() {
   };
 
   return (
-    <div className="space-y-5 px-4 pb-4 pt-6">
+    <div className="space-y-5 px-4 pb-24 pt-6">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Master Data</p>
-          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
-            <PackageIcon className="h-5 w-5 text-primary" />
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/75">Master Data</p>
+          <h1 className="break-words pb-1 text-4xl font-extrabold leading-[1.15] tracking-tight md:text-5xl md:leading-[1.15]">
             Produk
           </h1>
+          <p className="text-sm font-medium text-muted-foreground">Kelola katalog, harga, stok, dan barcode produk.</p>
         </div>
         {canManage && (
           <Button size="sm" onClick={openAdd} className="h-10 gap-1.5 rounded-full px-4 shadow-glow">
@@ -204,13 +204,25 @@ export default function Produk() {
       </Card>
 
       {/* Product count */}
-      <p className="text-xs font-medium text-muted-foreground">{filtered.length} produk ditemukan</p>
+      <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-card/70 px-4 py-3 shadow-soft backdrop-blur-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <PackageIcon className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-extrabold">{filtered.length} produk</p>
+            <p className="text-xs text-muted-foreground">Ditemukan sesuai filter</p>
+          </div>
+        </div>
+      </div>
 
       {/* Product List */}
       {filtered.length === 0 ? (
-        <div className="text-center py-12">
-          <PackageIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
-          <p className="text-sm text-muted-foreground">Belum ada produk</p>
+        <div className="rounded-3xl border border-dashed border-border/80 bg-card/60 px-6 py-12 text-center shadow-soft">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <PackageIcon className="h-7 w-7" />
+          </div>
+          <p className="text-sm font-semibold">Belum ada produk</p>
           {canManage && (
             <Button variant="outline" size="sm" className="mt-3" onClick={openAdd}>
               <Plus className="w-4 h-4 mr-1" /> Tambah Produk
@@ -220,8 +232,8 @@ export default function Produk() {
       ) : (
         <div className="space-y-2.5">
           {filtered.map(p => (
-            <Card key={p.id} className="overflow-hidden border-border/70 shadow-soft transition-shadow hover:shadow-card">
-              <CardContent className="p-3">
+            <Card key={p.id} className="overflow-hidden rounded-3xl border-border/70 bg-card/80 shadow-soft backdrop-blur-sm transition-shadow hover:shadow-card">
+              <CardContent className="p-3.5">
                 <div className="flex items-start gap-3">
                   {/* Product thumbnail */}
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-muted/70 shadow-soft">
