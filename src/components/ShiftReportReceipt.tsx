@@ -30,6 +30,7 @@ export default function ShiftReportReceipt({
 }: ShiftReportReceiptProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
+  const [printing, setPrinting] = useState(false);
 
   const captureReceipt = async (): Promise<HTMLCanvasElement | null> => {
     if (!receiptRef.current) return null;
@@ -88,24 +89,29 @@ export default function ShiftReportReceipt({
   };
 
   const handlePrint = async () => {
-    const printData = {
-      shift,
-      storeSettings,
-      openedByName: openedBy?.name,
-      closedByName: closedBy?.name,
-    };
+    setPrinting(true);
+    try {
+      const printData = {
+        shift,
+        storeSettings,
+        openedByName: openedBy?.name,
+        closedByName: closedBy?.name,
+      };
 
-    if (isNativePlatform()) {
-      await printNativeShiftReportBluetooth(printData, toast);
-      return;
+      if (isNativePlatform()) {
+        await printNativeShiftReportBluetooth(printData, toast);
+        return;
+      }
+
+      if ('bluetooth' in navigator) {
+        await printWebBluetoothShiftReport(printData, toast);
+        return;
+      }
+
+      window.print();
+    } finally {
+      setPrinting(false);
     }
-
-    if ('bluetooth' in navigator) {
-      await printWebBluetoothShiftReport(printData, toast);
-      return;
-    }
-
-    window.print();
   };
 
   const diff = shift.cashDifference ?? 0;
@@ -172,8 +178,8 @@ export default function ShiftReportReceipt({
           <Button variant="outline" size="sm" onClick={handleShare} disabled={generating}>
             <Share2 className="mr-1 h-4 w-4" /> Bagikan
           </Button>
-          <Button size="sm" onClick={handlePrint} disabled={generating}>
-            <Printer className="mr-1 h-4 w-4" /> Cetak
+          <Button size="sm" onClick={handlePrint} disabled={generating || printing}>
+            <Printer className="mr-1 h-4 w-4" /> {printing ? 'Mencetak…' : 'Cetak'}
           </Button>
         </div>
         <Button variant="ghost" size="sm" onClick={onClose}>

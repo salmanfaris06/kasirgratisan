@@ -41,7 +41,14 @@ interface ToastLike {
   error: (m: string) => void;
 }
 
+interface NativePrintMessages {
+  start: string;
+  success: string;
+  noDevices: string;
+}
+
 const DEFAULT_PRINTER_KEY = 'kg_default_bluetooth_printer';
+const BLUETOOTH_WRITE_CHUNK_SIZE = 100;
 
 export const isNativePlatform = (): boolean => {
   return Capacitor.isNativePlatform();
@@ -179,83 +186,27 @@ export const getShiftReportESCPOSData = ({
   return lines.join('');
 };
 
-export const printNativeBluetooth = async (printData: PrintData, toast: ToastLike): Promise<boolean> => {
-  if (!window.bluetoothSerial) {
-    toast.error('Plugin Bluetooth tidak tersedia.');
-    return false;
-  }
-
-  const defaultPrinter = getDefaultBluetoothPrinter();
-  if (!defaultPrinter) {
-    toast.error('Printer default belum dipilih. Silakan atur printer di menu Pengaturan terlebih dahulu.');
-    return false;
-  }
-
-  return new Promise((resolve) => {
-    window.bluetoothSerial?.isEnabled(
-      () => {
-        toast.info('Mencari printer Bluetooth berpasangan...');
-        window.bluetoothSerial?.list(
-          async (devices) => {
-            if (devices.length === 0) {
-              toast.error('Tidak ada printer Bluetooth yang dipasangkan (paired). Hubungkan di Pengaturan Android dulu.');
-              resolve(false);
-              return;
-            }
-
-            const printer = devices.find(d => d.address === defaultPrinter.address);
-            if (!printer) {
-              toast.error(`Printer "${defaultPrinter.name}" tidak terdeteksi. Pastikan printer menyala dan terhubung.`);
-              resolve(false);
-              return;
-            }
-
-            toast.info(`Menghubungkan ke ${printer.name}...`);
-            window.bluetoothSerial?.connect(
-              printer.address,
-              () => {
-                toast.info('Mencetak struk...');
-                const encoder = new TextEncoder();
-                const rawText = getESCPOSData(printData);
-                const data = encoder.encode(rawText);
-
-                window.bluetoothSerial?.write(
-                  data,
-                  () => {
-                    toast.success('Struk berhasil dicetak!');
-                    window.bluetoothSerial?.disconnect(() => {}, () => {});
-                    resolve(true);
-                  },
-                  (err) => {
-                    toast.error(`Gagal mencetak: ${err}`);
-                    window.bluetoothSerial?.disconnect(() => {}, () => {});
-                    resolve(false);
-                  }
-                );
-              },
-              (err) => {
-                toast.error(`Koneksi gagal: ${err}`);
-                resolve(false);
-              }
-            );
-          },
-          (err) => {
-            toast.error(`Gagal mendapatkan daftar printer: ${err}`);
-            resolve(false);
-          }
-        );
-      },
-      () => {
-        toast.error('Bluetooth tidak aktif. Silakan aktifkan Bluetooth.');
-        resolve(false);
-      }
-    );
-  });
+const disconnectNativeBluetooth = () => {
+  window.bluetoothSerial?.disconnect(() => {}, () => {});
 };
 
-export const printNativeShiftReportBluetooth = async (
-  printData: ShiftReportPrintData,
+const writeNativeBluetoothChunks = async (data: Uint8Array): Promise<void> => {
+  for (let i = 0; i < data.length; i += BLUETOOTH_WRITE_CHUNK_SIZE) {
+    const chunk = data.slice(i, i + BLUETOOTH_WRITE_CHUNK_SIZE);
+    await new Promise<void>((resolve, reject) => {
+      window.bluetoothSerial?.write(
+        chunk,
+        () => resolve(),
+        (err) => reject(new Error(err)),
+      );
+    });
+  }
+};
+
+const printNativeBluetoothData = async (
+  rawText: string,
   toast: ToastLike,
+  messages: NativePrintMessages,
 ): Promise<boolean> => {
   if (!window.bluetoothSerial) {
     toast.error('Plugin Bluetooth tidak tersedia.');
@@ -275,7 +226,7 @@ export const printNativeShiftReportBluetooth = async (
         window.bluetoothSerial?.list(
           (devices) => {
             if (devices.length === 0) {
-              toast.error('Tidak ada printer Bluetooth yang dipasangkan (paired). Hubungkan di Pengaturan Android dulu.');
+              toast.error(messages.noDevices);
               resolve(false);
               return;
             }
@@ -291,21 +242,19 @@ export const printNativeShiftReportBluetooth = async (
             window.bluetoothSerial?.connect(
               printer.address,
               () => {
-                toast.info('Mencetak laporan shift...');
-                const data = new TextEncoder().encode(getShiftReportESCPOSData(printData));
-                window.bluetoothSerial?.write(
-                  data,
-                  () => {
-                    toast.success('Laporan shift berhasil dicetak!');
-                    window.bluetoothSerial?.disconnect(() => {}, () => {});
+                toast.info(messages.start);
+                const data = new TextEncoder().encode(rawText);
+                writeNativeBluetoothChunks(data)
+                  .then(() => {
+                    toast.success(messages.success);
+                    disconnectNativeBluetooth();
                     resolve(true);
-                  },
-                  (err) => {
-                    toast.error(`Gagal mencetak: ${err}`);
-                    window.bluetoothSerial?.disconnect(() => {}, () => {});
+                  })
+                  .catch((err: unknown) => {
+                    toast.error(`Gagal mencetak: ${err instanceof Error ? err.message : String(err)}`);
+                    disconnectNativeBluetooth();
                     resolve(false);
-                  },
-                );
+                  });
               },
               (err) => {
                 toast.error(`Koneksi gagal: ${err}`);
@@ -324,6 +273,25 @@ export const printNativeShiftReportBluetooth = async (
         resolve(false);
       },
     );
+  });
+};
+
+export const printNativeBluetooth = async (printData: PrintData, toast: ToastLike): Promise<boolean> => {
+  return printNativeBluetoothData(getESCPOSData(printData), toast, {
+    start: 'Mencetak struk...',
+    success: 'Struk berhasil dicetak!',
+    noDevices: 'Tidak ada printer Bluetooth yang dipasangkan (paired). Hubungkan di Pengaturan Android dulu.',
+  });
+};
+
+export const printNativeShiftReportBluetooth = async (
+  printData: ShiftReportPrintData,
+  toast: ToastLike,
+): Promise<boolean> => {
+  return printNativeBluetoothData(getShiftReportESCPOSData(printData), toast, {
+    start: 'Mencetak laporan shift...',
+    success: 'Laporan shift berhasil dicetak!',
+    noDevices: 'Tidak ada printer Bluetooth yang dipasangkan (paired). Hubungkan di Pengaturan Android dulu.',
   });
 };
 
