@@ -31,6 +31,10 @@ export const PERMISSION_LABELS: Record<PermissionKey, { title: string; desc: str
     title: 'Buat Transaksi',
     desc: 'Akses Kasir, simpan open bill, dan checkout pembayaran',
   },
+  manage_shifts: {
+    title: 'Shift & Tutup Kasir',
+    desc: 'Buka shift, tutup kasir, dan lihat ringkasan kas harian',
+  },
   delete_transaction: {
     title: 'Hapus / Batalkan Transaksi',
     desc: 'Hapus transaksi di Riwayat dan batalkan open bill',

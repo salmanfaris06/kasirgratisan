@@ -3,6 +3,7 @@ import Dexie, { type Table } from 'dexie';
 // === Permission keys (CR-multiuser) ===
 export type PermissionKey =
   | 'create_transaction'
+  | 'manage_shifts'
   | 'delete_transaction'
   | 'manage_products'
   | 'manage_categories_payments'
@@ -17,6 +18,7 @@ export type PermissionKey =
 
 export const ALL_PERMISSIONS: PermissionKey[] = [
   'create_transaction',
+  'manage_shifts',
   'delete_transaction',
   'manage_products',
   'manage_categories_payments',
@@ -159,6 +161,7 @@ export interface Transaction {
   openedAt?: Date;
   closedAt?: Date;
   createdBy?: number; // userId — kasir pembuat transaksi
+  shiftId?: number; // cashier shift id, undefined for legacy/no active shift
 }
 
 export interface TransactionItemRecord {
@@ -174,6 +177,26 @@ export interface TransactionItemRecord {
   discountAmount: number;
   subtotal: number;
   notes?: string;
+}
+
+export interface CashierShift {
+  id?: number;
+  code: string;
+  status: 'open' | 'closed';
+  openedAt: Date;
+  closedAt: Date | null;
+  openedBy?: number;
+  closedBy?: number;
+  openingCash: number;
+  countedCash: number | null;
+  expectedCash: number | null;
+  cashDifference: number | null;
+  totalSales: number;
+  totalTransactions: number;
+  cashSales: number;
+  nonCashSales: number;
+  notes?: string;
+  closingNotes?: string;
 }
 
 export interface Unit {
@@ -247,6 +270,7 @@ class PosDatabase extends Dexie {
   units!: Table<Unit>;
   expenseCategories!: Table<ExpenseCategory>;
   expenses!: Table<Expense>;
+  cashierShifts!: Table<CashierShift>;
 
   constructor() {
     super('kasirgratisan-db');
@@ -572,6 +596,30 @@ class PosDatabase extends Dexie {
       users:             '++id, &username, role, isActive',
       expenseCategories: '++id, name, isDeleted',
       expenses:          '++id, date, categoryId, paymentMethodId, createdBy, isDeleted',
+    });
+
+    // Version 11 — Cashier shifts / tutup kasir harian
+    // Notes:
+    //   * New cashierShifts table stores open/closed shift snapshots.
+    //   * transactions.shiftId links completed sales to the active shift.
+    //   * Existing transactions keep shiftId undefined and remain visible in reports.
+    this.version(11).stores({
+      categories:        '++id, name, isDeleted',
+      products:          '++id, name, &sku, categoryId, barcode, isDeleted, createdBy, updatedBy',
+      suppliers:         '++id, name, isDeleted',
+      customers:         '++id, name, isDeleted',
+      stockIns:          '++id, productId, supplierId, date, createdBy',
+      stockOuts:         '++id, productId, date, createdBy',
+      hppHistory:        '++id, productId, date',
+      paymentMethods:    '++id, name, category',
+      transactions:      '++id, date, &receiptNumber, paymentMethodId, status, orderNumber, createdBy, shiftId',
+      transactionItems:  '++id, transactionId, productId',
+      storeSettings:     '++id',
+      units:             '++id, &name, isDeleted',
+      users:             '++id, &username, role, isActive',
+      expenseCategories: '++id, name, isDeleted',
+      expenses:          '++id, date, categoryId, paymentMethodId, createdBy, isDeleted',
+      cashierShifts:     '++id, code, status, openedAt, closedAt, openedBy, closedBy',
     });
   }
 }
