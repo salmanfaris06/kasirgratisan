@@ -18,8 +18,10 @@ import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { useAuth } from '@/hooks/use-auth';
 import { trackEvent } from '@/lib/analytics';
+import { getActiveShift } from '@/lib/shifts';
 import CustomerPicker from '@/components/CustomerPicker';
 import LockedPage from '@/components/LockedPage';
+import { Link } from 'react-router-dom';
 
 interface CartItem {
   product: Product;
@@ -71,6 +73,7 @@ export default function Kasir() {
   const paymentMethods = useLiveQuery(() => db.paymentMethods.toArray());
   const storeSettings = useLiveQuery(() => db.storeSettings.toCollection().first());
   const openBills = useLiveQuery(() => db.transactions.where('status').equals('open').reverse().sortBy('date'));
+  const activeShift = useLiveQuery(() => getActiveShift());
   const allUsers = useLiveQuery(() => db.users.toArray());
   const customers = useLiveQuery(() => db.customers.where('isDeleted').equals(0).toArray());
 
@@ -384,6 +387,11 @@ export default function Kasir() {
 
   const handleCheckout = async () => {
     if (!paymentMethodId || paidAmount < total) return;
+    if (!activeShift?.id) {
+      toast.error('Buka shift terlebih dahulu sebelum transaksi');
+      setCheckoutOpen(false);
+      return;
+    }
 
     if (editingTxId) {
       // Update existing open bill → paid
@@ -405,6 +413,7 @@ export default function Kasir() {
         tableNumber: tableNumber.trim() || undefined,
         remarks: remarks.trim() || undefined,
         closedAt: new Date(),
+        shiftId: activeShift.id,
       });
 
       await db.transactionItems.where('transactionId').equals(editingTxId).delete();
@@ -471,6 +480,7 @@ export default function Kasir() {
         tableNumber: tableNumber.trim() || undefined,
         remarks: remarks.trim() || undefined,
         createdBy: currentUser?.id,
+        shiftId: activeShift.id,
       };
 
       const txId = await db.transactions.add(txData);
@@ -621,6 +631,20 @@ export default function Kasir() {
           </div>
         </div>
       </div>
+
+      {!activeShift && (
+        <div className="mb-3 rounded-2xl border border-warning/30 bg-warning/5 p-4 text-sm">
+          <p className="font-semibold text-foreground">Shift belum dibuka</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Buka shift terlebih dahulu sebelum melakukan transaksi. Ini memastikan uang tunai dan laporan tutup kasir tercatat rapi.
+          </p>
+          {can('manage_shifts') && (
+            <Link to="/shifts" className="mt-3 inline-flex">
+              <Button size="sm" className="h-9 rounded-full">Buka Shift</Button>
+            </Link>
+          )}
+        </div>
+      )}
 
       {/* Category chips */}
       <div className="mb-3 flex gap-2 overflow-x-auto pb-1 pr-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}>
@@ -873,6 +897,7 @@ export default function Kasir() {
                 <Button
                   className="flex-1 h-12 text-sm font-semibold"
                   onClick={() => { setCheckoutOpen(true); setPaymentMethodId(paymentMethods?.[0]?.id?.toString() ?? ''); setPaymentAmount(total.toString()); setIsQuickAdding(false); }}
+                  disabled={cart.length === 0 || !activeShift}
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
                   Bayar
@@ -1093,6 +1118,7 @@ export default function Kasir() {
                 <Button
                   className="flex-1 h-12 text-sm font-semibold"
                   onClick={() => { setCheckoutOpen(true); setPaymentMethodId(paymentMethods?.[0]?.id?.toString() ?? ''); setPaymentAmount(total.toString()); setIsQuickAdding(false); }}
+                  disabled={cart.length === 0 || !activeShift}
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
                   Bayar
@@ -1270,7 +1296,7 @@ export default function Kasir() {
               </div>
             )}
 
-            <Button className="w-full h-12 text-base font-semibold" onClick={handleCheckout} disabled={!paymentMethodId || paidAmount < total}>
+            <Button className="w-full h-12 text-base font-semibold" onClick={handleCheckout} disabled={!activeShift || !paymentMethodId || paidAmount < total}>
               <Check className="w-5 h-5 mr-2" />
               Konfirmasi Transaksi
             </Button>
