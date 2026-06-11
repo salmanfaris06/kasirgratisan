@@ -343,8 +343,11 @@ export default function Laporan() {
                         <p className="text-[10px] text-muted-foreground">{percent.toFixed(0)}%</p>
                       </div>
                     </div>
-                    <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all" style={{ width: `${percent}%`, backgroundColor: cat.color }} />
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full origin-left rounded-full transition-transform duration-300 ease-out"
+                        style={{ transform: `scaleX(${percent / 100})`, backgroundColor: cat.color }}
+                      />
                     </div>
                   </div>
                 );

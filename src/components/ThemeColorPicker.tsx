@@ -16,10 +16,13 @@ export default function ThemeColorPicker({ value, onChange }: ThemeColorPickerPr
         return (
           <button
             key={color.hue}
+            type="button"
+            aria-label={`Pilih warna tema ${color.name}`}
+            aria-pressed={isActive}
             onClick={() => onChange(color.hue)}
             className={cn(
-              'w-11 h-11 rounded-xl flex items-center justify-center transition-all border-2',
-              isActive ? 'scale-110 shadow-floating border-foreground/30' : 'border-transparent hover:scale-105'
+              'flex h-11 w-11 items-center justify-center rounded-xl border-2 transition-[border-color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              isActive ? 'scale-110 border-foreground/30 shadow-floating' : 'border-transparent hover:scale-105'
             )}
             style={{ backgroundColor: `hsl(${hsl})` }}
             title={color.name}

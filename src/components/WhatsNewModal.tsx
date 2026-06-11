@@ -117,7 +117,7 @@ export default function WhatsNewModal({
                   key={f.id}
                   onClick={() => setIndex(i)}
                   className={cn(
-                    'h-1.5 rounded-full transition-all',
+                    'h-1.5 rounded-full transition-[width,background-color] duration-150 ease-out',
                     i === safeIndex ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/25',
                   )}
                   aria-label={`Slide ${i + 1}`}

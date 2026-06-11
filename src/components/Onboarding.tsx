@@ -296,7 +296,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
             <div
               key={i}
               className={cn(
-                'h-1.5 rounded-full transition-all duration-300',
+                'h-1.5 rounded-full transition-[width,background-color] duration-300 ease-out',
                 i === step ? 'w-6 bg-primary' : 'w-1.5 bg-muted-foreground/20'
               )}
             />
@@ -403,7 +403,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
               </div>
               <Button variant="outline" className="w-full h-10 text-sm gap-2" onClick={handleRestore} disabled={restoring}>
                 <Upload className="w-4 h-4" />
-                {restoring ? 'Restore data...' : 'Restore Toko dari Backup'}
+                {restoring ? 'Restore data…' : 'Restore Toko dari Backup'}
               </Button>
             </div>
 
@@ -529,7 +529,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
             onClick={handleFinish}
             disabled={!storeName.trim() || saving}
           >
-            {saving ? 'Menyimpan...' : 'Mulai Jualan! 🚀'}
+            {saving ? 'Menyimpan…' : 'Mulai Jualan! 🚀'}
           </Button>
         ) : (
           <Button
