@@ -12,6 +12,7 @@ import { StatusBar } from "@capacitor/status-bar";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { Loader2 } from "lucide-react";
 import AppLayout from "./components/layout/AppLayout";
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Cashier = lazy(() => import("./pages/Cashier"));
@@ -32,8 +33,11 @@ const queryClient = new QueryClient();
 
 function RouteFallback() {
   return (
-    <div className="flex min-h-[50vh] items-center justify-center px-4 text-sm text-muted-foreground">
-      Memuat halaman…
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card/80 px-4 py-3 text-sm text-muted-foreground shadow-soft backdrop-blur-sm">
+        <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />
+        <span>Memuat halaman…</span>
+      </div>
     </div>
   );
 }
