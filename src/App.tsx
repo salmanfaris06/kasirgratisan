@@ -27,6 +27,7 @@ const TransactionHistory = lazy(() => import("./pages/TransactionHistory"));
 const StockReport = lazy(() => import("./pages/StockReport"));
 const UsersPage = lazy(() => import("./pages/Users"));
 const ExpensesPage = lazy(() => import("./pages/Expenses"));
+const ShiftsPage = lazy(() => import("./pages/Shifts"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -90,6 +91,7 @@ const App = () => {
                   <Route path="/stock-report" element={<LazyRoute><StockReport /></LazyRoute>} />
                   <Route path="/users" element={<LazyRoute><UsersPage /></LazyRoute>} />
                   <Route path="/expenses" element={<LazyRoute><ExpensesPage /></LazyRoute>} />
+                  <Route path="/shifts" element={<LazyRoute><ShiftsPage /></LazyRoute>} />
                 </Route>
                 <Route path="*" element={<LazyRoute><NotFound /></LazyRoute>} />
               </Routes>

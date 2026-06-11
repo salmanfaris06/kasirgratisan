@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type PaymentMethod, type Category, type Unit, type ExpenseCategory, type Product, type Supplier, type Customer, type StockIn, type StockOut, type HppHistory, type Transaction, type TransactionItemRecord, type StoreSettings, type User, type Expense } from '@/lib/db';
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Settings, Store, CreditCard, Tag, Download, Upload, Plus, Trash2, Edit2, Info, Truck, ArrowDownToLine, ArrowUpFromLine, ChevronRight, Receipt, Palette, HardDrive, Package, Camera, X, Ruler, Users as UsersIcon, ShieldCheck, LogOut, Smartphone, CheckCircle2, Globe, Share2, Wallet, Sparkles, LineChart, Sun, Moon, Monitor } from 'lucide-react';
+import { Settings, Store, CreditCard, Tag, Download, Upload, Plus, Trash2, Edit2, Info, Truck, ArrowDownToLine, ArrowUpFromLine, ChevronRight, Receipt, Palette, HardDrive, Package, Camera, X, Ruler, Users as UsersIcon, ShieldCheck, LogOut, Smartphone, CheckCircle2, Globe, Share2, Wallet, Sparkles, LineChart, Sun, Moon, Monitor, CalendarClock } from 'lucide-react';
 import WhatsNewModal from '@/components/WhatsNewModal';
 import { FEATURES, getUnseenFeatures } from '@/lib/whats-new';
 import ThemeColorPicker from '@/components/ThemeColorPicker';
@@ -742,6 +742,17 @@ export default function Pengaturan() {
             </CardContent>
           </Card>
         </Link>
+        {can('manage_shifts') && (
+          <Link to="/shifts">
+            <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
+              <CardContent className="p-3 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><CalendarClock className="w-4 h-4" /></div>
+                <div className="flex-1"><p className="text-sm font-semibold">Shift & Tutup Kasir</p><p className="text-[10px] text-muted-foreground">Buka shift, hitung kas, dan tutup harian</p></div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </CardContent>
+            </Card>
+          </Link>
+        )}
         {can('manage_supplier') && (
           <Link to="/supplier">
             <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
