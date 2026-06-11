@@ -22,6 +22,7 @@ interface ReceiptProps {
 export default function Receipt({ open, onClose, transaction, items, storeSettings, paymentMethodName, cashierName }: ReceiptProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
+  const [printing, setPrinting] = useState(false);
 
   const captureReceipt = async (): Promise<HTMLCanvasElement | null> => {
     if (!receiptRef.current) return null;
@@ -82,42 +83,49 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
   };
 
   const handleBluetoothPrint = async () => {
-    const printData = { transaction, items, storeSettings, paymentMethodName, cashierName };
+    if (printing) return;
 
-    if (isNativePlatform()) {
-      await printNativeBluetooth(printData, toast);
-      return;
-    }
-
-    if (!('bluetooth' in navigator)) {
-      toast.error('Bluetooth tidak tersedia di browser ini. Gunakan Chrome di Android.');
-      return;
-    }
-
+    setPrinting(true);
     try {
-      toast.info('Mencari printer Bluetooth...');
-      // @ts-expect-error Web Bluetooth API is not fully typed in TypeScript
-      const device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: ['000018f0-0000-1000-8000-00805f9b34fb'] }],
-        optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'],
-      });
+      const printData = { transaction, items, storeSettings, paymentMethodName, cashierName };
 
-      const server = await device.gatt.connect();
-      const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
-      const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
-      const data = new TextEncoder().encode(getESCPOSData(printData));
-      
-      for (let i = 0; i < data.length; i += 100) {
-        const chunk = data.slice(i, i + 100);
-        await characteristic.writeValue(chunk);
+      if (isNativePlatform()) {
+        await printNativeBluetooth(printData, toast);
+        return;
       }
 
-      toast.success('Struk berhasil dicetak!');
-      await server.disconnect();
-    } catch (err: unknown) {
-      if (err instanceof Error && err.name !== 'NotFoundError') {
-        toast.error('Gagal mencetak. Pastikan printer Bluetooth menyala.');
+      if (!('bluetooth' in navigator)) {
+        toast.error('Bluetooth tidak tersedia di browser ini. Gunakan Chrome di Android.');
+        return;
       }
+
+      try {
+        toast.info('Mencari printer Bluetooth...');
+        // @ts-expect-error Web Bluetooth API is not fully typed in TypeScript
+        const device = await navigator.bluetooth.requestDevice({
+          filters: [{ services: ['000018f0-0000-1000-8000-00805f9b34fb'] }],
+          optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'],
+        });
+
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+        const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+        const data = new TextEncoder().encode(getESCPOSData(printData));
+        
+        for (let i = 0; i < data.length; i += 100) {
+          const chunk = data.slice(i, i + 100);
+          await characteristic.writeValue(chunk);
+        }
+
+        toast.success('Struk berhasil dicetak!');
+        await server.disconnect();
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name !== 'NotFoundError') {
+          toast.error('Gagal mencetak. Pastikan printer Bluetooth menyala.');
+        }
+      }
+    } finally {
+      setPrinting(false);
     }
   };
 
@@ -239,9 +247,9 @@ export default function Receipt({ open, onClose, transaction, items, storeSettin
             <Share2 className="w-5 h-5" />
             <span className="text-[10px]">Bagikan</span>
           </Button>
-          <Button variant="outline" className="flex flex-col items-center gap-1 h-auto py-3" onClick={handleBluetoothPrint} disabled={generating}>
+          <Button variant="outline" className="flex flex-col items-center gap-1 h-auto py-3" onClick={handleBluetoothPrint} disabled={generating || printing}>
             <Printer className="w-5 h-5" />
-            <span className="text-[10px]">Cetak</span>
+            <span className="text-[10px]">{printing ? 'Mencetak…' : 'Cetak'}</span>
           </Button>
         </div>
 
