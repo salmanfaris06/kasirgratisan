@@ -33,7 +33,6 @@ export default function AppLayout() {
 
   return (
     <div className="relative mx-auto min-h-screen max-w-lg overflow-hidden bg-background/85 md:max-w-6xl">
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-80 bg-[radial-gradient(circle_at_15%_0%,hsl(var(--primary)/0.16),transparent_24rem),radial-gradient(circle_at_85%_12%,hsl(var(--accent)/0.10),transparent_22rem)]" />
       <main className="relative z-10 pb-24">
         <Outlet />
       </main>
