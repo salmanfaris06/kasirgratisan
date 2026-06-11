@@ -113,7 +113,7 @@ export default function CustomersPage() {
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Cari pelanggan..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-10" />
+        <Input name="customer-search" autoComplete="off" placeholder="Cari pelanggan…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-10" />
       </div>
 
       <p className="text-xs text-muted-foreground">{filtered.length} pelanggan</p>
@@ -152,9 +152,9 @@ export default function CustomersPage() {
                     {c.notes && <p className="text-xs text-muted-foreground mt-1 italic">{c.notes}</p>}
                   </div>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setViewCustomer(c)}><Eye className="w-3.5 h-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(c)}><Edit2 className="w-3.5 h-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteId(c.id!)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Lihat pelanggan ${c.name}`} className="h-8 w-8" onClick={() => setViewCustomer(c)}><Eye className="w-3.5 h-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Edit pelanggan ${c.name}`} className="h-8 w-8" onClick={() => openEdit(c)}><Edit2 className="w-3.5 h-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Hapus pelanggan ${c.name}`} className="h-8 w-8 text-destructive" onClick={() => setDeleteId(c.id!)}><Trash2 className="w-3.5 h-3.5" /></Button>
                   </div>
                 </div>
               </CardContent>
@@ -167,10 +167,10 @@ export default function CustomersPage() {
         <DialogContent className="max-w-[95vw] rounded-xl">
           <DialogHeader><DialogTitle>{editCustomer ? 'Edit' : 'Tambah'} Pelanggan</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
-            <div className="space-y-1.5"><Label>Nama Pelanggan *</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: Budi Santoso" className="h-11" /></div>
-            <div className="space-y-1.5"><Label>Nomor HP</Label><Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="08123456789" className="h-11" type="tel" /></div>
-            <div className="space-y-1.5"><Label>Email</Label><Input value={email} onChange={e => setEmail(e.target.value)} placeholder="nama@email.com" className="h-11" type="email" /></div>
-            <div className="space-y-1.5"><Label>Alamat</Label><Input value={address} onChange={e => setAddress(e.target.value)} placeholder="Alamat pelanggan" className="h-11" /></div>
+            <div className="space-y-1.5"><Label>Nama Pelanggan *</Label><Input name="customer-name" autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: Budi Santoso" className="h-11" /></div>
+            <div className="space-y-1.5"><Label>Nomor HP</Label><Input name="customer-phone" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="08123456789" className="h-11" type="tel" inputMode="tel" /></div>
+            <div className="space-y-1.5"><Label>Email</Label><Input name="customer-email" autoComplete="email" spellCheck={false} value={email} onChange={e => setEmail(e.target.value)} placeholder="nama@email.com" className="h-11" type="email" /></div>
+            <div className="space-y-1.5"><Label>Alamat</Label><Input name="customer-address" autoComplete="street-address" value={address} onChange={e => setAddress(e.target.value)} placeholder="Alamat pelanggan" className="h-11" /></div>
             <div className="space-y-1.5"><Label>Catatan</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Catatan tambahan" rows={2} /></div>
             <Button className="w-full h-11" onClick={handleSave} disabled={!name.trim()}>Simpan</Button>
           </div>
@@ -245,7 +245,7 @@ export default function CustomersPage() {
                 </div>
 
                 {customerTx === undefined ? (
-                  <p className="text-xs text-muted-foreground py-4 text-center">Memuat...</p>
+                  <p className="text-xs text-muted-foreground py-4 text-center">Memuat…</p>
                 ) : customerTx.length === 0 ? (
                   <div className="text-center py-8">
                     <ShoppingBag className="w-10 h-10 mx-auto text-muted-foreground/30 mb-2" />
@@ -258,7 +258,7 @@ export default function CustomersPage() {
                         key={tx.id}
                         type="button"
                         onClick={() => navigate(`/history?txId=${tx.id}`)}
-                        className="w-full text-left rounded-lg border border-border p-2.5 hover:bg-muted/50 transition-colors"
+                        className="w-full rounded-lg border border-border p-2.5 text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2 min-w-0">

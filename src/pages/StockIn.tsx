@@ -100,7 +100,7 @@ export default function StockInPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/settings">
-            <Button variant="ghost" size="icon" className="h-8 w-8"><ChevronLeft className="w-4 h-4" /></Button>
+            <Button variant="ghost" size="icon" aria-label="Kembali ke pengaturan" className="h-8 w-8"><ChevronLeft className="w-4 h-4" /></Button>
           </Link>
           <h1 className="text-xl font-bold flex items-center gap-2">
             <ArrowDownToLine className="w-5 h-5 text-success" />
@@ -174,11 +174,11 @@ export default function StockInPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Jumlah *</Label>
-                <Input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="10" className="h-11" />
+                <Input name="stock-in-quantity" autoComplete="off" type="number" inputMode="numeric" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="10" className="h-11" />
               </div>
               <div className="space-y-1.5">
                 <Label>Harga Beli/Unit *</Label>
-                <Input type="number" value={buyPrice} onChange={e => setBuyPrice(e.target.value)} placeholder="5000" className="h-11" />
+                <Input name="stock-in-buy-price" autoComplete="off" type="number" inputMode="numeric" value={buyPrice} onChange={e => setBuyPrice(e.target.value)} placeholder="5000" className="h-11" />
               </div>
             </div>
             {quantity && buyPrice && (

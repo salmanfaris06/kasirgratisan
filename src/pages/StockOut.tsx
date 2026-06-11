@@ -78,7 +78,7 @@ export default function StockOutPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link to="/settings">
-            <Button variant="ghost" size="icon" className="h-8 w-8"><ChevronLeft className="w-4 h-4" /></Button>
+            <Button variant="ghost" size="icon" aria-label="Kembali ke pengaturan" className="h-8 w-8"><ChevronLeft className="w-4 h-4" /></Button>
           </Link>
           <h1 className="text-xl font-bold flex items-center gap-2">
             <ArrowUpFromLine className="w-5 h-5 text-destructive" />
@@ -133,7 +133,7 @@ export default function StockOutPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Jumlah *</Label>
-                <Input type="number" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="1" className="h-11" max={selectedProduct?.stock} />
+                <Input name="stock-out-quantity" autoComplete="off" type="number" inputMode="numeric" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="1" className="h-11" max={selectedProduct?.stock} />
               </div>
               <div className="space-y-1.5">
                 <Label>Alasan *</Label>
@@ -149,7 +149,7 @@ export default function StockOutPage() {
                 <span className="font-bold">{selectedProduct.stock - Number(quantity)} {selectedProduct.unit}</span>
               </div>
             )}
-            <div className="space-y-1.5"><Label>Catatan</Label><Input value={notes} onChange={e => setNotes(e.target.value)} placeholder="Opsional" className="h-11" /></div>
+            <div className="space-y-1.5"><Label>Catatan</Label><Input name="stock-out-notes" autoComplete="off" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Opsional" className="h-11" /></div>
             <Button className="w-full h-12 text-base font-semibold" onClick={handleSave}>Simpan Stock Out</Button>
           </div>
         </DialogContent>

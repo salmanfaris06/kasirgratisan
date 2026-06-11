@@ -80,7 +80,7 @@ export default function SupplierPage() {
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Cari supplier..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-10" />
+        <Input name="supplier-search" autoComplete="off" placeholder="Cari supplier…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-10" />
       </div>
 
       <p className="text-xs text-muted-foreground">{filtered.length} supplier</p>
@@ -114,8 +114,8 @@ export default function SupplierPage() {
                     {s.notes && <p className="text-xs text-muted-foreground mt-1 italic">{s.notes}</p>}
                   </div>
                   <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(s)}><Edit2 className="w-3.5 h-3.5" /></Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteId(s.id!)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Edit supplier ${s.name}`} className="h-8 w-8" onClick={() => openEdit(s)}><Edit2 className="w-3.5 h-3.5" /></Button>
+                    <Button variant="ghost" size="icon" aria-label={`Hapus supplier ${s.name}`} className="h-8 w-8 text-destructive" onClick={() => setDeleteId(s.id!)}><Trash2 className="w-3.5 h-3.5" /></Button>
                   </div>
                 </div>
               </CardContent>
@@ -128,9 +128,9 @@ export default function SupplierPage() {
         <DialogContent className="max-w-[95vw] rounded-xl">
           <DialogHeader><DialogTitle>{editSupplier ? 'Edit' : 'Tambah'} Supplier</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
-            <div className="space-y-1.5"><Label>Nama Supplier *</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: PT Sumber Jaya" className="h-11" /></div>
-            <div className="space-y-1.5"><Label>Telepon</Label><Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="08123456789" className="h-11" type="tel" /></div>
-            <div className="space-y-1.5"><Label>Alamat</Label><Input value={address} onChange={e => setAddress(e.target.value)} placeholder="Alamat supplier" className="h-11" /></div>
+            <div className="space-y-1.5"><Label>Nama Supplier *</Label><Input name="supplier-name" autoComplete="organization" value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: PT Sumber Jaya" className="h-11" /></div>
+            <div className="space-y-1.5"><Label>Telepon</Label><Input name="supplier-phone" autoComplete="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="08123456789" className="h-11" type="tel" inputMode="tel" /></div>
+            <div className="space-y-1.5"><Label>Alamat</Label><Input name="supplier-address" autoComplete="street-address" value={address} onChange={e => setAddress(e.target.value)} placeholder="Alamat supplier" className="h-11" /></div>
             <div className="space-y-1.5"><Label>Catatan</Label><Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Catatan tambahan" rows={2} /></div>
             <Button className="w-full h-11" onClick={handleSave} disabled={!name.trim()}>Simpan</Button>
           </div>

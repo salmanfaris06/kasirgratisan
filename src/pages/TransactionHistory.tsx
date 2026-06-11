@@ -163,7 +163,7 @@ export default function TransactionHistory() {
     <div className="px-4 pt-6 pb-4">
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
+        <Button variant="ghost" size="icon" aria-label="Kembali" className="h-8 w-8" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <h1 className="text-xl font-bold flex items-center gap-2">
@@ -176,7 +176,9 @@ export default function TransactionHistory() {
       <div className="relative mb-3">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Cari no. struk atau nama produk..."
+          name="transaction-search"
+          autoComplete="off"
+          placeholder="Cari no. struk atau nama produk…"
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="pl-9 h-10"
@@ -224,7 +226,7 @@ export default function TransactionHistory() {
         </Popover>
 
         {hasDateFilter && (
-          <Button variant="ghost" size="icon" className="h-9 w-9 shrink-0" onClick={clearDateFilter}>
+          <Button variant="ghost" size="icon" aria-label="Hapus filter tanggal" className="h-9 w-9 shrink-0" onClick={clearDateFilter}>
             <X className="w-4 h-4" />
           </Button>
         )}
