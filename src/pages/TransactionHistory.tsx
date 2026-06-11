@@ -160,36 +160,42 @@ export default function TransactionHistory() {
   const rp = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="space-y-4 px-4 pb-4 pt-6">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-4">
-        <Button variant="ghost" size="icon" aria-label="Kembali" className="h-8 w-8" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-4 h-4" />
+      <div className="flex items-start gap-3">
+        <Button variant="ghost" size="icon" aria-label="Kembali" className="mt-1 h-8 w-8 rounded-full" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <ReceiptIcon className="w-5 h-5 text-primary" />
-          Riwayat Transaksi
-        </h1>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Audit Penjualan</p>
+          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <ReceiptIcon className="h-5 w-5 text-primary" />
+            Riwayat Transaksi
+          </h1>
+          <p className="mt-1 text-xs text-muted-foreground">Cari struk, cek open bill, dan telusuri transaksi lama.</p>
+        </div>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-3">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          name="transaction-search"
-          autoComplete="off"
-          placeholder="Cari no. struk atau nama produk…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="pl-9 h-10"
-        />
-      </div>
+      <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm">
+        <CardContent className="space-y-2.5 p-2.5">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              name="transaction-search"
+              autoComplete="off"
+              placeholder="Cari no. struk atau nama produk…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="h-10 border-transparent bg-background/70 pl-9"
+            />
+          </div>
 
-      {/* Date Filter */}
-      <div className="flex items-center gap-2 mb-4">
-        <Popover>
+          {/* Date Filter */}
+          <div className="flex items-center gap-2">
+            <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className={cn("h-9 text-xs gap-1.5 flex-1", dateFrom && "border-primary text-primary")}>
+            <Button variant="outline" size="sm" className={cn("h-9 flex-1 gap-1.5 rounded-xl bg-background/70 text-xs", dateFrom && "border-primary text-primary")}>
               <CalendarIcon className="w-3.5 h-3.5" />
               {dateFrom ? format(dateFrom, 'dd MMM yyyy', { locale: localeId }) : 'Dari tanggal'}
             </Button>
@@ -205,11 +211,11 @@ export default function TransactionHistory() {
           </PopoverContent>
         </Popover>
 
-        <span className="text-xs text-muted-foreground">—</span>
+            <span className="text-xs text-muted-foreground">—</span>
 
-        <Popover>
+            <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className={cn("h-9 text-xs gap-1.5 flex-1", dateTo && "border-primary text-primary")}>
+            <Button variant="outline" size="sm" className={cn("h-9 flex-1 gap-1.5 rounded-xl bg-background/70 text-xs", dateTo && "border-primary text-primary")}>
               <CalendarIcon className="w-3.5 h-3.5" />
               {dateTo ? format(dateTo, 'dd MMM yyyy', { locale: localeId }) : 'Sampai tanggal'}
             </Button>
@@ -225,15 +231,17 @@ export default function TransactionHistory() {
           </PopoverContent>
         </Popover>
 
-        {hasDateFilter && (
-          <Button variant="ghost" size="icon" aria-label="Hapus filter tanggal" className="h-9 w-9 shrink-0" onClick={clearDateFilter}>
-            <X className="w-4 h-4" />
-          </Button>
-        )}
-      </div>
+            {hasDateFilter && (
+              <Button variant="ghost" size="icon" aria-label="Hapus filter tanggal" className="h-9 w-9 shrink-0 rounded-xl" onClick={clearDateFilter}>
+                <X className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Status filter tabs */}
-      <div className="flex gap-1.5 mb-4">
+      <div className="flex gap-1.5 rounded-2xl border border-border/70 bg-card/80 p-1 shadow-soft">
         {([
           { value: 'all', label: 'Semua' },
           { value: 'open', label: 'Open Bill' },
@@ -243,8 +251,8 @@ export default function TransactionHistory() {
             key={tab.value}
             onClick={() => setFilterStatus(tab.value)}
             className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              filterStatus === tab.value ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+              'flex-1 rounded-xl px-3 py-2 text-xs font-semibold transition-[background-color,color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+              filterStatus === tab.value ? 'bg-primary text-primary-foreground shadow-glow' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
             {tab.label}
@@ -254,9 +262,10 @@ export default function TransactionHistory() {
 
       {/* Cashier filter (only when multi-user is on) */}
       {multiUserEnabled && users && users.length > 0 && (
-        <div className="mb-4">
-          <Select value={filterCashier} onValueChange={setFilterCashier}>
-            <SelectTrigger className="h-9 text-xs">
+        <Card className="border-border/70 bg-card/80 shadow-soft">
+          <CardContent className="p-2.5">
+            <Select value={filterCashier} onValueChange={setFilterCashier}>
+            <SelectTrigger className="h-9 border-transparent bg-background/70 text-xs">
               <div className="flex items-center gap-1.5">
                 <UserCircle2 className="w-3.5 h-3.5 text-muted-foreground" />
                 <SelectValue placeholder="Filter Kasir" />
@@ -271,13 +280,14 @@ export default function TransactionHistory() {
               ))}
               <SelectItem value="unknown">Tanpa Kasir (data lama)</SelectItem>
             </SelectContent>
-          </Select>
-        </div>
+            </Select>
+          </CardContent>
+        </Card>
       )}
 
       {/* Summary */}
       {filtered.length > 0 && (
-        <div className="grid grid-cols-2 gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-2">
           <Card className="border-border/70 shadow-soft">
             <CardContent className="p-3 text-center">
               <p className="text-[10px] text-muted-foreground">Total Transaksi</p>
@@ -295,16 +305,19 @@ export default function TransactionHistory() {
 
       {/* Transaction list grouped by date */}
       {dateKeys.length === 0 ? (
-        <div className="text-center py-16">
-          <ShoppingBag className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-sm text-muted-foreground">
+        <div className="rounded-3xl border border-dashed border-border/80 bg-card/60 px-6 py-16 text-center shadow-soft">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <ShoppingBag className="h-7 w-7" />
+          </div>
+          <p className="text-sm font-semibold">
             {hasDateFilter ? 'Tidak ada transaksi di rentang tanggal ini' : 'Belum ada transaksi'}
           </p>
+          <p className="mt-1 text-xs text-muted-foreground">Transaksi yang selesai dari kasir akan muncul di sini.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {dateKeys.map(dateKey => (
-            <div key={dateKey}>
+            <section key={dateKey}>
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
                 <p className="text-xs font-semibold text-muted-foreground">
@@ -318,10 +331,10 @@ export default function TransactionHistory() {
                 {grouped[dateKey].map(tx => (
                   <Card
                     key={tx.id ?? tx.receiptNumber}
-                    className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow active:scale-[0.99]"
+                    className="cursor-pointer border-border/70 shadow-soft transition-[box-shadow,transform] duration-150 ease-out hover:shadow-card active:scale-[0.99]"
                     onClick={() => openDetail(tx)}
                   >
-                    <CardContent className="p-3 flex items-center gap-3">
+                    <CardContent className="flex items-center gap-3 p-3.5">
                       <div className={cn('w-9 h-9 rounded-lg flex items-center justify-center shrink-0', tx.status === 'open' ? 'bg-warning/10 text-warning' : 'bg-primary/10 text-primary')}>
                         {tx.status === 'open' ? <ShoppingCart className="w-4 h-4" /> : <ReceiptIcon className="w-4 h-4" />}
                       </div>
@@ -358,7 +371,7 @@ export default function TransactionHistory() {
                   </Card>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       )}

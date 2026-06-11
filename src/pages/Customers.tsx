@@ -100,40 +100,51 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="px-4 pt-6 pb-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <UsersIcon className="w-5 h-5 text-primary" />
-          Pelanggan
-        </h1>
-        <Button size="sm" onClick={openAdd} className="h-9 gap-1.5">
-          <Plus className="w-4 h-4" /> Tambah
+    <div className="space-y-4 px-4 pb-4 pt-6">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Relasi</p>
+          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <UsersIcon className="h-5 w-5 text-primary" />
+            Pelanggan
+          </h1>
+          <p className="mt-1 text-xs text-muted-foreground">Kelola kontak dan riwayat belanja pelanggan.</p>
+        </div>
+        <Button size="sm" onClick={openAdd} className="h-10 gap-1.5 rounded-full px-4 shadow-glow">
+          <Plus className="h-4 w-4" /> Tambah
         </Button>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input name="customer-search" autoComplete="off" placeholder="Cari pelanggan…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9 h-10" />
-      </div>
+      <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm">
+        <CardContent className="p-2.5">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input name="customer-search" autoComplete="off" placeholder="Cari pelanggan…" value={search} onChange={e => setSearch(e.target.value)} className="h-10 border-transparent bg-background/70 pl-9" />
+          </div>
+        </CardContent>
+      </Card>
 
-      <p className="text-xs text-muted-foreground">{filtered.length} pelanggan</p>
+      <p className="text-xs font-medium text-muted-foreground">{filtered.length} pelanggan</p>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-12">
-          <UsersIcon className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
-          <p className="text-sm text-muted-foreground">Belum ada pelanggan</p>
-          <Button variant="outline" size="sm" className="mt-3" onClick={openAdd}>
+        <div className="rounded-3xl border border-dashed border-border/80 bg-card/60 px-6 py-12 text-center shadow-soft">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <UsersIcon className="h-7 w-7" />
+          </div>
+          <p className="text-sm font-semibold">Belum ada pelanggan</p>
+          <p className="mt-1 text-xs text-muted-foreground">Tambahkan pelanggan untuk melihat riwayat belanja mereka.</p>
+          <Button variant="outline" size="sm" className="mt-4 rounded-full" onClick={openAdd}>
             <Plus className="w-4 h-4 mr-1" /> Tambah Pelanggan
           </Button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {filtered.map(c => (
-            <Card key={c.id} className="border-border/70 shadow-soft">
-              <CardContent className="p-3">
+            <Card key={c.id} className="border-border/70 shadow-soft transition-shadow hover:shadow-card">
+              <CardContent className="p-3.5">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold">{c.name}</h3>
+                    <h3 className="truncate text-sm font-semibold">{c.name}</h3>
                     {c.phone && (
                       <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                         <Phone className="w-3 h-3" /> {c.phone}
@@ -149,7 +160,7 @@ export default function CustomersPage() {
                         <MapPin className="w-3 h-3" /> {c.address}
                       </p>
                     )}
-                    {c.notes && <p className="text-xs text-muted-foreground mt-1 italic">{c.notes}</p>}
+                    {c.notes && <p className="mt-1 line-clamp-2 text-xs italic text-muted-foreground">{c.notes}</p>}
                   </div>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="icon" aria-label={`Lihat pelanggan ${c.name}`} className="h-8 w-8" onClick={() => setViewCustomer(c)}><Eye className="w-3.5 h-3.5" /></Button>
