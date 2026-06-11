@@ -167,8 +167,7 @@ export default function TransactionHistory() {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Audit Penjualan</p>
-          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+          <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
             <ReceiptIcon className="h-5 w-5 text-primary" />
             Riwayat Transaksi
           </h1>

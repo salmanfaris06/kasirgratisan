@@ -70,8 +70,7 @@ export default function SupplierPage() {
     <div className="space-y-4 px-4 pb-4 pt-6">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Inventori</p>
-          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+          <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
             <Truck className="h-5 w-5 text-primary" />
             Supplier
           </h1>

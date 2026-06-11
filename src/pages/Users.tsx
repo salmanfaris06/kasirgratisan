@@ -235,8 +235,7 @@ export default function UsersPage() {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Akses Toko</p>
-          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+          <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
             <UsersIcon className="h-5 w-5 text-primary" />
             Karyawan & Akses
           </h1>

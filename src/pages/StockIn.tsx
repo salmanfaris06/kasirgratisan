@@ -103,8 +103,7 @@ export default function StockInPage() {
             <Button variant="ghost" size="icon" aria-label="Kembali ke pengaturan" className="h-8 w-8 rounded-full"><ChevronLeft className="h-4 w-4" /></Button>
           </Link>
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-success/80">Stok Masuk</p>
-            <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
               <ArrowDownToLine className="h-5 w-5 text-success" />
               Stock In
             </h1>

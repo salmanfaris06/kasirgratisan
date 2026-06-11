@@ -563,10 +563,10 @@ export default function Kasir() {
       <div className="flex h-full flex-col gap-0 md:flex-row md:gap-4">
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           {/* Header */}
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div className="min-w-0 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/75">Transaksi</p>
-          <h1 className="flex flex-wrap items-center gap-2 break-words pb-1 text-4xl font-extrabold leading-[1.15] tracking-tight md:text-5xl md:leading-[1.15]">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <ShoppingCart className="h-5 w-5 text-primary" />
             Kasir
             {editingTxId && (
               <Badge variant="secondary" className="text-[10px] font-normal">

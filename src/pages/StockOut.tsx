@@ -81,8 +81,7 @@ export default function StockOutPage() {
             <Button variant="ghost" size="icon" aria-label="Kembali ke pengaturan" className="h-8 w-8 rounded-full"><ChevronLeft className="h-4 w-4" /></Button>
           </Link>
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-destructive/80">Stok Keluar</p>
-            <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
               <ArrowUpFromLine className="h-5 w-5 text-destructive" />
               Stock Out
             </h1>

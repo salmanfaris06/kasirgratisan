@@ -159,13 +159,12 @@ export default function Produk() {
   return (
     <div className="space-y-5 px-4 pb-24 pt-6">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/75">Master Data</p>
-          <h1 className="break-words pb-1 text-4xl font-extrabold leading-[1.15] tracking-tight md:text-5xl md:leading-[1.15]">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <PackageIcon className="h-5 w-5 text-primary" />
             Produk
           </h1>
-          <p className="text-sm font-medium text-muted-foreground">Kelola katalog, harga, stok, dan barcode produk.</p>
         </div>
         {canManage && (
           <Button size="sm" onClick={openAdd} className="h-10 gap-1.5 rounded-full px-4 shadow-glow">

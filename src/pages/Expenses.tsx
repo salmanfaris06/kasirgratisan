@@ -225,12 +225,10 @@ export default function ExpensesPage() {
             </Button>
           </Link>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning/80">Operasional</p>
-            <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
               <Wallet className="h-5 w-5 text-warning" />
               Pengeluaran
             </h1>
-            <p className="mt-1 text-xs text-muted-foreground">Catat biaya operasional agar laba bersih lebih akurat.</p>
           </div>
         </div>
         {canManage && (

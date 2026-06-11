@@ -588,7 +588,6 @@ export default function Pengaturan() {
   return (
     <div className="space-y-6 px-4 pb-4 pt-6">
       <div className="space-y-1">
-        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Preferensi Toko</p>
         <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
           <Settings className="h-5 w-5 text-primary" />
           Pengaturan
