@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 import { checkVersion } from "@/lib/version-check";
 import { initAnalytics } from "@/lib/analytics";
 import { Capacitor } from "@capacitor/core";
@@ -13,22 +13,40 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import AppLayout from "./components/layout/AppLayout";
-import Dashboard from "./pages/Dashboard";
-import Cashier from "./pages/Cashier";
-import Products from "./pages/Products";
-import Reports from "./pages/Reports";
-import Settings from "./pages/Settings";
-import SupplierPage from "./pages/Supplier";
-import CustomersPage from "./pages/Customers";
-import StockInPage from "./pages/StockIn";
-import StockOutPage from "./pages/StockOut";
-import TransactionHistory from "./pages/TransactionHistory";
-import StockReport from "./pages/StockReport";
-import UsersPage from "./pages/Users";
-import ExpensesPage from "./pages/Expenses";
-import NotFound from "./pages/NotFound";
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Cashier = lazy(() => import("./pages/Cashier"));
+const Products = lazy(() => import("./pages/Products"));
+const Reports = lazy(() => import("./pages/Reports"));
+const Settings = lazy(() => import("./pages/Settings"));
+const SupplierPage = lazy(() => import("./pages/Supplier"));
+const CustomersPage = lazy(() => import("./pages/Customers"));
+const StockInPage = lazy(() => import("./pages/StockIn"));
+const StockOutPage = lazy(() => import("./pages/StockOut"));
+const TransactionHistory = lazy(() => import("./pages/TransactionHistory"));
+const StockReport = lazy(() => import("./pages/StockReport"));
+const UsersPage = lazy(() => import("./pages/Users"));
+const ExpensesPage = lazy(() => import("./pages/Expenses"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+function RouteFallback() {
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center px-4 text-sm text-muted-foreground">
+      Memuat halaman…
+    </div>
+  );
+}
+
+function LazyRoute({ children }: { children: ReactNode }) {
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<RouteFallback />}>
+        {children}
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
 
 const App = () => {
   useEffect(() => {
@@ -55,112 +73,21 @@ const App = () => {
               <AnalyticsTracker />
               <Routes>
                 <Route element={<AppLayout />}>
-                  <Route
-                    path="/"
-                    element={
-                      <ErrorBoundary>
-                        <Dashboard />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/cashier"
-                    element={
-                      <ErrorBoundary>
-                        <Cashier />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/products"
-                    element={
-                      <ErrorBoundary>
-                        <Products />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/reports"
-                    element={
-                      <ErrorBoundary>
-                        <Reports />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <ErrorBoundary>
-                        <Settings />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/supplier"
-                    element={
-                      <ErrorBoundary>
-                        <SupplierPage />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/customers"
-                    element={
-                      <ErrorBoundary>
-                        <CustomersPage />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/stock-in"
-                    element={
-                      <ErrorBoundary>
-                        <StockInPage />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/stock-out"
-                    element={
-                      <ErrorBoundary>
-                        <StockOutPage />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/history"
-                    element={
-                      <ErrorBoundary>
-                        <TransactionHistory />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/stock-report"
-                    element={
-                      <ErrorBoundary>
-                        <StockReport />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/users"
-                    element={
-                      <ErrorBoundary>
-                        <UsersPage />
-                      </ErrorBoundary>
-                    }
-                  />
-                  <Route
-                    path="/expenses"
-                    element={
-                      <ErrorBoundary>
-                        <ExpensesPage />
-                      </ErrorBoundary>
-                    }
-                  />
+                  <Route path="/" element={<LazyRoute><Dashboard /></LazyRoute>} />
+                  <Route path="/cashier" element={<LazyRoute><Cashier /></LazyRoute>} />
+                  <Route path="/products" element={<LazyRoute><Products /></LazyRoute>} />
+                  <Route path="/reports" element={<LazyRoute><Reports /></LazyRoute>} />
+                  <Route path="/settings" element={<LazyRoute><Settings /></LazyRoute>} />
+                  <Route path="/supplier" element={<LazyRoute><SupplierPage /></LazyRoute>} />
+                  <Route path="/customers" element={<LazyRoute><CustomersPage /></LazyRoute>} />
+                  <Route path="/stock-in" element={<LazyRoute><StockInPage /></LazyRoute>} />
+                  <Route path="/stock-out" element={<LazyRoute><StockOutPage /></LazyRoute>} />
+                  <Route path="/history" element={<LazyRoute><TransactionHistory /></LazyRoute>} />
+                  <Route path="/stock-report" element={<LazyRoute><StockReport /></LazyRoute>} />
+                  <Route path="/users" element={<LazyRoute><UsersPage /></LazyRoute>} />
+                  <Route path="/expenses" element={<LazyRoute><ExpensesPage /></LazyRoute>} />
                 </Route>
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<LazyRoute><NotFound /></LazyRoute>} />
               </Routes>
               </AuthProvider>
             </BrowserRouter>

@@ -73,4 +73,10 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // `exceljs` is dynamically imported only when exporting reports and is
+    // intentionally large. Keep the production build signal focused on chunks
+    // that affect normal app navigation.
+    chunkSizeWarningLimit: 1000,
+  },
 }));
