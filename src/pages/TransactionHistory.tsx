@@ -535,7 +535,7 @@ export default function TransactionHistory() {
 
       {/* Delete Confirmation */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Transaksi?</AlertDialogTitle>
             <AlertDialogDescription asChild>

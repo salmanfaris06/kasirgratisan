@@ -135,7 +135,7 @@ export default function SupplierPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{editSupplier ? 'Edit' : 'Tambah'} Supplier</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5"><Label>Nama Supplier *</Label><Input name="supplier-name" autoComplete="organization" value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: PT Sumber Jaya" className="h-11" /></div>
@@ -148,7 +148,7 @@ export default function SupplierPage() {
       </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Supplier?</AlertDialogTitle>
             <AlertDialogDescription>Data supplier yang dihapus tidak bisa dikembalikan.</AlertDialogDescription>

@@ -340,7 +340,7 @@ export default function UsersPage() {
 
       {/* Add/Edit dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-2xl sm:max-w-lg">
+        <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto rounded-2xl">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Karyawan' : 'Tambah Karyawan'}</DialogTitle>
             <DialogDescription className="text-xs">
@@ -433,7 +433,7 @@ export default function UsersPage() {
 
       {/* PIN reset dialog */}
       <Dialog open={pinDialogOpen} onOpenChange={setPinDialogOpen}>
-        <DialogContent className="max-w-[90vw] rounded-2xl sm:max-w-sm">
+        <DialogContent className="max-w-sm rounded-2xl">
           <DialogHeader>
             <DialogTitle>Reset PIN {pinTarget?.name}</DialogTitle>
             <DialogDescription className="text-xs">
@@ -463,7 +463,7 @@ export default function UsersPage() {
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Akun {deleteTarget?.name}?</AlertDialogTitle>
             <AlertDialogDescription>

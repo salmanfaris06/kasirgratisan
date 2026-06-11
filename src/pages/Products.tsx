@@ -293,7 +293,7 @@ export default function Produk() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-2xl p-0 sm:max-w-xl">
+        <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto rounded-2xl p-0">
           <DialogHeader className="border-b border-border/70 px-5 py-4 text-left">
             <DialogTitle className="text-xl font-extrabold tracking-tight">{editProduct ? 'Edit Produk' : 'Tambah Produk'}</DialogTitle>
             <p className="text-sm text-muted-foreground">Lengkapi informasi produk agar kasir lebih cepat saat transaksi.</p>
@@ -453,7 +453,7 @@ export default function Produk() {
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="max-w-[90vw] rounded-2xl">
+        <AlertDialogContent className="max-w-sm rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Produk?</AlertDialogTitle>
             <AlertDialogDescription>Produk yang dihapus tidak bisa dikembalikan.</AlertDialogDescription>

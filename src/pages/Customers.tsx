@@ -174,7 +174,7 @@ export default function CustomersPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{editCustomer ? 'Edit' : 'Tambah'} Pelanggan</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5"><Label>Nama Pelanggan *</Label><Input name="customer-name" autoComplete="name" value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: Budi Santoso" className="h-11" /></div>
@@ -188,7 +188,7 @@ export default function CustomersPage() {
       </Dialog>
 
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Pelanggan?</AlertDialogTitle>
             <AlertDialogDescription>Data pelanggan yang dihapus tidak bisa dikembalikan. Transaksi lama tetap menyimpan nama pelanggan.</AlertDialogDescription>
@@ -202,7 +202,7 @@ export default function CustomersPage() {
 
       {/* View customer + transaction history */}
       <Dialog open={!!viewCustomer} onOpenChange={(open) => { if (!open) setViewCustomer(null); }}>
-        <DialogContent className="max-w-[95vw] sm:max-w-md rounded-xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="max-w-md rounded-xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <UsersIcon className="w-4 h-4 text-primary" />

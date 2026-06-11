@@ -126,7 +126,7 @@ export default function StockOutPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-2xl sm:max-w-md">
+        <DialogContent className="max-w-md rounded-2xl">
           <DialogHeader className="border-b border-border/70 pb-3 text-left"><DialogTitle>Tambah Stock Out</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5">

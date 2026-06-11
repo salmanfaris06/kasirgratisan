@@ -1201,7 +1201,7 @@ export default function Kasir() {
 
       {/* Checkout Dialog */}
       <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader>
             <DialogTitle>Pembayaran</DialogTitle>
           </DialogHeader>
@@ -1308,7 +1308,7 @@ export default function Kasir() {
 
       {/* Discount Dialog */}
       <Dialog open={discountDialogOpen} onOpenChange={setDiscountDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader>
             <DialogTitle>Diskon Transaksi</DialogTitle>
           </DialogHeader>
@@ -1376,7 +1376,7 @@ export default function Kasir() {
 
       {/* Item Discount Dialog */}
       <Dialog open={itemDiscountTargetId !== null} onOpenChange={(open) => { if (!open) setItemDiscountTargetId(null); }}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader>
             <DialogTitle>Diskon Item</DialogTitle>
           </DialogHeader>
@@ -1479,7 +1479,7 @@ export default function Kasir() {
 
       {/* Cancel Open Bill Confirmation */}
       <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Batalkan Bill?</AlertDialogTitle>
             <AlertDialogDescription>

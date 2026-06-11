@@ -1150,7 +1150,7 @@ export default function Pengaturan() {
 
       {/* Install Help Dialog */}
       <Dialog open={installHelpOpen} onOpenChange={setInstallHelpOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Smartphone className="w-5 h-5 text-primary" />
@@ -1219,7 +1219,7 @@ export default function Pengaturan() {
 
       {/* Store Dialog */}
       <Dialog open={storeDialog} onOpenChange={setStoreDialog}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>Info Toko</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             {/* Logo picker */}
@@ -1279,7 +1279,7 @@ export default function Pengaturan() {
 
       {/* Payment Method Dialog */}
       <Dialog open={pmDialog} onOpenChange={setPmDialog}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{pmEditId ? 'Edit' : 'Tambah'} Metode Pembayaran</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5"><Label>Nama</Label><Input value={pmName} onChange={e => setPmName(e.target.value)} placeholder="Contoh: Transfer BCA" className="h-11" /></div>
@@ -1298,7 +1298,7 @@ export default function Pengaturan() {
 
       {/* Category Dialog */}
       <Dialog open={catDialog} onOpenChange={setCatDialog}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{catEditId ? 'Edit' : 'Tambah'} Kategori</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5"><Label>Nama Kategori</Label><Input value={catName} onChange={e => setCatName(e.target.value)} placeholder="Contoh: Snack" className="h-11" /></div>
@@ -1321,7 +1321,7 @@ export default function Pengaturan() {
 
       {/* Expense Category Dialog */}
       <Dialog open={expCatDialog} onOpenChange={setExpCatDialog}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{expCatEditId ? 'Edit' : 'Tambah'} Kategori Pengeluaran</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5">
@@ -1358,7 +1358,7 @@ export default function Pengaturan() {
 
       {/* Multi-User Activation Dialog */}
       <Dialog open={activateOpen} onOpenChange={setActivateOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-md rounded-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Aktifkan Multi-User</DialogTitle>
             <DialogDescription className="text-xs">
@@ -1426,7 +1426,7 @@ export default function Pengaturan() {
 
       {/* Unit Dialog */}
       <Dialog open={unitDialog} onOpenChange={setUnitDialog}>
-        <DialogContent className="max-w-[95vw] rounded-xl">
+        <DialogContent className="max-w-md rounded-xl">
           <DialogHeader><DialogTitle>{unitEditId ? 'Edit' : 'Tambah'} Satuan</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5">
@@ -1450,7 +1450,7 @@ export default function Pengaturan() {
 
       {/* Disable Multi-User Confirmation */}
       <AlertDialog open={disableOpen} onOpenChange={setDisableOpen}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Nonaktifkan Multi-User?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -1469,7 +1469,7 @@ export default function Pengaturan() {
 
       {/* Logout Confirmation */}
       <AlertDialog open={logoutOpen} onOpenChange={setLogoutOpen}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Keluar dari Akun?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -1487,7 +1487,7 @@ export default function Pengaturan() {
 
       {/* Unit Delete Confirm */}
       <AlertDialog open={!!unitDeleteTarget} onOpenChange={(o) => { if (!o) setUnitDeleteTarget(null); }}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-sm rounded-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Satuan "{unitDeleteTarget?.name}"?</AlertDialogTitle>
             <AlertDialogDescription>

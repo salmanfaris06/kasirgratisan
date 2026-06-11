@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import html2canvas from 'html2canvas';
-import { Download, Printer, Share2, X } from 'lucide-react';
+import { Download, Printer, Share2 } from 'lucide-react';
 import type { CashierShift, StoreSettings, User } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -118,7 +118,7 @@ export default function ShiftReportReceipt({
 
   return (
     <Dialog open={open} onOpenChange={(value) => !value && onClose()}>
-      <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-xl p-4">
+      <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto rounded-xl p-4">
         <DialogHeader>
           <DialogTitle className="text-center">Laporan Tutup Kasir</DialogTitle>
         </DialogHeader>
@@ -182,9 +182,6 @@ export default function ShiftReportReceipt({
             <Printer className="mr-1 h-4 w-4" /> {printing ? 'Mencetak…' : 'Cetak'}
           </Button>
         </div>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          <X className="mr-1 h-4 w-4" /> Tutup
-        </Button>
       </DialogContent>
     </Dialog>
   );
