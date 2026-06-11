@@ -12,8 +12,8 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-3 left-3 right-3 z-50 rounded-3xl border border-border/70 bg-card/90 shadow-floating backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:left-1/2 md:right-auto md:w-[calc(100%-1.5rem)] md:max-w-6xl md:-translate-x-1/2">
-      <div className="flex items-end justify-around h-16 px-2 md:px-4">
+    <nav className="fixed bottom-3 left-3 right-3 z-50 rounded-[2rem] border border-border/70 bg-card/85 shadow-floating backdrop-blur-2xl pb-[env(safe-area-inset-bottom)] ring-1 ring-white/5 md:left-1/2 md:right-auto md:w-[calc(100%-1.5rem)] md:max-w-6xl md:-translate-x-1/2">
+      <div className="flex h-[4.25rem] items-end justify-around px-2 md:px-4">
         {navItems.map(({ to, icon: Icon, label, isCta }) => (
           <NavLink
             key={to}
@@ -37,7 +37,7 @@ export default function BottomNav() {
               isCta ? (
                 <>
                   <div className={cn(
-                    'w-14 h-14 rounded-full flex items-center justify-center shadow-glow transition-transform duration-150 ease-out active:scale-95',
+                    'w-16 h-16 rounded-full flex items-center justify-center shadow-[0_0_34px_hsl(var(--primary)/0.45)] transition-transform duration-150 ease-out active:scale-95',
                     'bg-primary text-primary-foreground',
                     isActive && 'ring-4 ring-primary/20'
                   )}>
@@ -51,8 +51,8 @@ export default function BottomNav() {
               ) : (
                 <>
                   <div className={cn(
-                    'flex items-center justify-center w-10 h-7 rounded-full transition-colors',
-                    isActive && 'bg-primary/10'
+                    'flex h-8 w-10 items-center justify-center rounded-full transition-colors',
+                    isActive && 'bg-primary/10 shadow-soft'
                   )}>
                     <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
                   </div>

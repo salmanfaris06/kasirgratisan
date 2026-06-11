@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, isStockManaged, type TransactionItemRecord } from '@/lib/db';
 import { useState, useEffect, useMemo } from 'react';
-import { ShoppingCart, Package, BarChart3, TrendingUp, AlertTriangle, Receipt, ChevronRight, ClipboardList, Wallet } from 'lucide-react';
+import { ShoppingCart, Package, BarChart3, TrendingUp, AlertTriangle, Receipt, ChevronRight, ClipboardList, Wallet, CalendarDays } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
@@ -90,19 +90,28 @@ export default function Dashboard() {
 
   const showBackup = !backupDismissed && storeSettings && shouldShowBackupReminder(storeSettings.lastBackupAt) && can('manage_backup');
 
-  const quickActions: { to: string; icon: typeof ShoppingCart; label: string; color: string; perm?: PermissionKey }[] = [
-    { to: '/cashier', icon: ShoppingCart, label: 'Kasir', color: 'bg-primary/10 text-primary', perm: 'create_transaction' },
-    { to: '/products', icon: Package, label: 'Produk', color: 'bg-accent/10 text-accent' },
-    { to: '/reports', icon: BarChart3, label: 'Laporan', color: 'bg-success/10 text-success', perm: 'view_reports' },
+  const quickActions: { to: string; icon: typeof ShoppingCart; label: string; desc: string; color: string; perm?: PermissionKey }[] = [
+    { to: '/cashier', icon: ShoppingCart, label: 'Kasir', desc: 'Mulai transaksi', color: 'bg-primary/15 text-primary ring-primary/20', perm: 'create_transaction' },
+    { to: '/products', icon: Package, label: 'Produk', desc: 'Kelola produk', color: 'bg-accent/15 text-accent ring-accent/20' },
+    { to: '/reports', icon: BarChart3, label: 'Laporan', desc: 'Lihat laporan', color: 'bg-success/15 text-success ring-success/20', perm: 'view_reports' },
   ];
   const visibleActions = quickActions.filter((a) => !a.perm || can(a.perm));
 
   return (
-    <div className="px-4 pt-6 space-y-6">
+    <div className="space-y-6 px-4 pt-6">
       {/* Header */}
-      <div className="space-y-1">
-        <p className="text-sm font-medium text-muted-foreground">{format(new Date(), 'EEEE, d MMMM yyyy', { locale: id })}</p>
-        <h1 className="text-2xl font-extrabold tracking-tight">{storeSettings?.storeName || 'KasirGratisan'}</h1>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 space-y-2">
+          <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+            <CalendarDays className="h-4 w-4 text-primary" />
+            {format(new Date(), 'EEEE, d MMMM yyyy', { locale: id })}
+          </p>
+          <h1 className="truncate text-4xl font-extrabold tracking-tight md:text-5xl">{storeSettings?.storeName || 'KasirGratisan'}</h1>
+        </div>
+        <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-border/70 bg-card/70 shadow-soft backdrop-blur-sm">
+          <ShoppingCart className="h-6 w-6 text-muted-foreground" />
+          <span className="absolute bottom-1.5 right-1.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary shadow-glow" />
+        </div>
       </div>
 
       {/* Backup Reminder */}
@@ -116,21 +125,22 @@ export default function Dashboard() {
 
       {/* Stats */}
       <section className="space-y-3">
-        <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-glow">
-          <CardContent className="relative p-5 md:p-6">
-            <div className="absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/15 blur-2xl" />
-            <div className="absolute -bottom-16 right-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-            <div className="relative flex items-start justify-between gap-4">
+        <Card className="overflow-hidden border-primary/40 bg-[radial-gradient(circle_at_85%_30%,hsl(38_92%_55%/0.95),transparent_18rem),linear-gradient(135deg,hsl(32_100%_50%),hsl(14_100%_50%))] text-primary-foreground shadow-[0_18px_45px_hsl(var(--primary)/0.35)]">
+          <CardContent className="relative min-h-[168px] p-6 md:p-7">
+            <div className="absolute -right-10 -top-12 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+            <div className="absolute -bottom-20 right-8 h-36 w-56 rounded-[100%] border border-white/20 bg-white/10 blur-sm" />
+            <div className="absolute -bottom-10 right-0 h-24 w-72 rounded-[100%] border-t border-white/25 bg-[radial-gradient(circle,hsl(0_0%_100%/0.28)_1px,transparent_1.5px)] [background-size:13px_13px] opacity-60" />
+            <div className="relative flex h-full items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/75">Penjualan Hari Ini</p>
-                <p className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">Rp {totalSales.toLocaleString('id-ID')}</p>
-                <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-primary-foreground/85">
-                  <span className="rounded-full bg-white/15 px-3 py-1">{txCount} transaksi</span>
-                  {can('view_reports') && <span className="rounded-full bg-white/15 px-3 py-1">Profit Rp {totalProfit.toLocaleString('id-ID')}</span>}
+                <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary-foreground/85">Penjualan Hari Ini</p>
+                <p className="mt-5 text-5xl font-extrabold tracking-tight drop-shadow md:text-6xl">Rp {totalSales.toLocaleString('id-ID')}</p>
+                <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-bold text-primary-foreground/90">
+                  <span className="rounded-full border border-white/25 bg-white/12 px-3 py-1.5 shadow-soft backdrop-blur-sm">{txCount} transaksi</span>
+                  {can('view_reports') && <span className="rounded-full border border-white/25 bg-white/12 px-3 py-1.5 shadow-soft backdrop-blur-sm">Profit Rp {totalProfit.toLocaleString('id-ID')}</span>}
                 </div>
               </div>
-              <div className="rounded-2xl bg-white/15 p-3 shadow-soft backdrop-blur-sm">
-                <TrendingUp className="h-6 w-6" />
+              <div className="mt-5 rounded-full border border-white/25 bg-white/15 p-4 shadow-[0_0_35px_hsl(0_0%_100%/0.25)] backdrop-blur-sm">
+                <TrendingUp className="h-8 w-8" />
               </div>
             </div>
           </CardContent>
@@ -138,9 +148,9 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
           {can('view_reports') && (
-            <Card className="border-border/70 shadow-soft">
-              <CardContent className="p-4">
-                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
+            <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm transition-shadow hover:shadow-card">
+              <CardContent className="p-4 md:p-5">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-success/15 text-success ring-1 ring-success/20">
                   <TrendingUp className="h-4 w-4" />
                 </div>
                 <p className="text-xs font-medium text-muted-foreground">Profit Hari Ini</p>
@@ -150,9 +160,9 @@ export default function Dashboard() {
           )}
           {(can('view_expenses') || can('manage_expenses')) && (
             <Link to="/expenses" className="contents">
-              <Card className="border-border/70 shadow-soft transition-shadow hover:shadow-card">
-                <CardContent className="p-4">
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-warning/10 text-warning">
+              <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm transition-shadow hover:shadow-card">
+                <CardContent className="p-4 md:p-5">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-warning/15 text-warning ring-1 ring-warning/20">
                     <Wallet className="h-4 w-4" />
                   </div>
                   <p className="text-xs font-medium text-muted-foreground">Pengeluaran</p>
@@ -162,9 +172,9 @@ export default function Dashboard() {
               </Card>
             </Link>
           )}
-          <Card className="border-border/70 shadow-soft">
-            <CardContent className="p-4">
-              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm transition-shadow hover:shadow-card">
+            <CardContent className="p-4 md:p-5">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/15 text-purple-400 ring-1 ring-purple-500/20">
                 <Receipt className="h-4 w-4" />
               </div>
               <p className="text-xs font-medium text-muted-foreground">Transaksi</p>
@@ -200,15 +210,19 @@ export default function Dashboard() {
             <h2 className="text-sm font-bold tracking-tight">Akses Cepat</h2>
             <span className="text-xs text-muted-foreground">Operasi utama</span>
           </div>
-          <div className={`grid gap-3 ${visibleActions.length === 1 ? 'grid-cols-1' : visibleActions.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
-            {visibleActions.map(({ to, icon: Icon, label, color }) => (
+          <div className={`grid gap-3 ${visibleActions.length === 1 ? 'grid-cols-1' : visibleActions.length === 2 ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
+            {visibleActions.map(({ to, icon: Icon, label, desc, color }) => (
               <Link key={to} to={to}>
-                <Card className="group border-border/70 shadow-soft transition-[box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-card active:translate-y-0 active:scale-[0.99]">
-                  <CardContent className="flex flex-col items-center gap-3 p-4">
-                    <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-transform duration-150 ease-out group-hover:scale-105 ${color}`}>
-                      <Icon className="h-5 w-5" />
+                <Card className="group border-border/70 bg-card/80 shadow-soft backdrop-blur-sm transition-[box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-card active:translate-y-0 active:scale-[0.99]">
+                  <CardContent className="flex items-center gap-4 p-4">
+                    <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-1 transition-transform duration-150 ease-out group-hover:scale-105 ${color}`}>
+                      <Icon className="h-7 w-7" />
                     </div>
-                    <span className="text-xs font-bold">{label}</span>
+                    <div className="min-w-0 flex-1 text-left">
+                      <p className="text-sm font-extrabold">{label}</p>
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">{desc}</p>
+                    </div>
+                    <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                   </CardContent>
                 </Card>
               </Link>
