@@ -52,6 +52,7 @@ export default function Laporan() {
   );
 
   const paymentMethods = useLiveQuery(() => db.paymentMethods.toArray());
+  const shifts = useLiveQuery(() => db.cashierShifts.orderBy('openedAt').reverse().limit(5).toArray());
 
   if (!can('view_reports')) {
     return <LockedPage title="Laporan" permissionLabel="Lihat Laporan & Profit" />;
@@ -214,6 +215,28 @@ export default function Laporan() {
           </div>
         </CardContent>
       </Card>
+
+      {can('manage_shifts') && shifts && shifts.length > 0 && (
+        <Card className="border-border/70 shadow-soft">
+          <CardHeader className="border-b border-border/70 bg-muted/20 pb-3">
+            <CardTitle className="text-sm">Shift Terakhir</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 p-3">
+            {shifts.map((shift) => (
+              <div key={shift.id} className="flex items-center justify-between rounded-xl bg-muted/40 px-3 py-2 text-sm">
+                <div>
+                  <p className="font-semibold">{shift.code}</p>
+                  <p className="text-xs text-muted-foreground">{shift.status === 'open' ? 'Berjalan' : 'Selesai'}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold">Rp {shift.totalSales.toLocaleString('id-ID')}</p>
+                  <p className="text-xs text-muted-foreground">Selisih Rp {(shift.cashDifference ?? 0).toLocaleString('id-ID')}</p>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {period === 'daily' && (
         <Card className="border-border/70 shadow-soft">

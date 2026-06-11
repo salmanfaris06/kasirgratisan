@@ -32,6 +32,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
+import ShiftReportReceipt from '@/components/ShiftReportReceipt';
 
 const rp = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
 
@@ -42,12 +43,14 @@ export default function ShiftsPage() {
   const [countedCash, setCountedCash] = useState('');
   const [closingNotes, setClosingNotes] = useState('');
   const [saving, setSaving] = useState(false);
+  const [printShift, setPrintShift] = useState<CashierShift | null>(null);
 
   const allowed = can('manage_shifts');
   const shifts = useLiveQuery(() => db.cashierShifts.orderBy('openedAt').reverse().toArray());
   const activeShift = useMemo(() => selectLatestOpenShift(shifts ?? []), [shifts]);
   const paymentMethods = useLiveQuery(() => db.paymentMethods.toArray());
   const users = useLiveQuery(() => db.users.toArray());
+  const storeSettings = useLiveQuery(() => db.storeSettings.toCollection().first());
 
   const activeTransactions = useLiveQuery(async () => {
     if (!activeShift?.id) return [] as Transaction[];
@@ -73,7 +76,8 @@ export default function ShiftsPage() {
     return <LockedPage title="Shift Kasir" permissionLabel="Shift & Tutup Kasir" />;
   }
 
-  const userName = (id?: number) => users?.find((u) => u.id === id)?.name ?? '—';
+  const userById = (id?: number) => users?.find((u) => u.id === id);
+  const userName = (id?: number) => userById(id)?.name ?? '—';
 
   const openShift = async () => {
     const validation = validateOpeningCash(openingCash);
@@ -136,8 +140,8 @@ export default function ShiftsPage() {
         cashSales: summary.cashSales,
       });
 
-      await db.cashierShifts.update(activeShift.id, {
-        status: 'closed',
+      const closedShiftUpdate = {
+        status: 'closed' as const,
         closedAt: new Date(),
         closedBy: currentUser?.id,
         countedCash: validation.value ?? 0,
@@ -148,7 +152,9 @@ export default function ShiftsPage() {
         cashSales: summary.cashSales,
         nonCashSales: summary.nonCashSales,
         closingNotes: closingNotes.trim() || undefined,
-      });
+      };
+      await db.cashierShifts.update(activeShift.id, closedShiftUpdate);
+      setPrintShift({ ...activeShift, ...closedShiftUpdate });
       setCountedCash('');
       setClosingNotes('');
       toast.success('Shift berhasil ditutup');
@@ -281,10 +287,24 @@ export default function ShiftsPage() {
                 <div className="rounded-lg bg-muted/50 p-2"><PlusCircle className="mb-1 h-3.5 w-3.5" /> Seharusnya<br /><strong>{rp(shift.expectedCash ?? 0)}</strong></div>
                 <div className="rounded-lg bg-muted/50 p-2"><MinusCircle className="mb-1 h-3.5 w-3.5" /> Selisih<br /><strong>{rp(shift.cashDifference ?? 0)}</strong></div>
               </div>
+              <Button variant="outline" size="sm" className="h-8 rounded-full" onClick={() => setPrintShift(shift)}>
+                Cetak Laporan
+              </Button>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {printShift && (
+        <ShiftReportReceipt
+          open={!!printShift}
+          onClose={() => setPrintShift(null)}
+          shift={printShift}
+          storeSettings={storeSettings}
+          openedBy={userById(printShift.openedBy)}
+          closedBy={userById(printShift.closedBy)}
+        />
+      )}
 
       {!activeShift && (
         <Card className="border-warning/30 bg-warning/5">

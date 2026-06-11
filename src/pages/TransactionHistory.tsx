@@ -55,9 +55,11 @@ export default function TransactionHistory() {
   const paymentMethods = useLiveQuery(() => db.paymentMethods.toArray());
   const storeSettings = useLiveQuery(() => db.storeSettings.toCollection().first());
   const users = useLiveQuery(() => db.users.toArray());
+  const shifts = useLiveQuery(() => db.cashierShifts.toArray());
 
   const userById = (uid?: number) => (uid ? users?.find((u) => u.id === uid) : undefined);
   const cashierName = (uid?: number) => userById(uid)?.name ?? '—';
+  const shiftById = (id?: number) => (id ? shifts?.find((shift) => shift.id === id) : undefined);
 
   // Auto-open detail if txId is in URL
   const txIdParam = searchParams.get('txId');
@@ -409,6 +411,12 @@ export default function TransactionHistory() {
                        <UserCircle2 className="w-3 h-3" />
                        {cashierName(selectedTx.createdBy)}
                      </span>
+                   </div>
+                 )}
+                 {selectedTx.shiftId && (
+                   <div className="flex justify-between text-xs">
+                     <span className="text-muted-foreground">Shift</span>
+                     <span className="font-medium">{shiftById(selectedTx.shiftId)?.code ?? `#${selectedTx.shiftId}`}</span>
                    </div>
                  )}
                  {selectedTx.customerName && (
