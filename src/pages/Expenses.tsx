@@ -216,36 +216,40 @@ export default function ExpensesPage() {
   const noPaymentMethods = !paymentMethods || paymentMethods.length === 0;
 
   return (
-    <div className="px-4 pt-6 pb-20 space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link to="/settings">
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <ChevronLeft className="w-4 h-4" />
+    <div className="space-y-4 px-4 pb-20 pt-6">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start gap-2">
+          <Link to="/settings" className="mt-1 shrink-0">
+            <Button variant="ghost" size="icon" aria-label="Kembali ke pengaturan" className="h-8 w-8 rounded-full">
+              <ChevronLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <h1 className="text-xl font-bold flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-warning" />
-            Pengeluaran
-          </h1>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-warning/80">Operasional</p>
+            <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+              <Wallet className="h-5 w-5 text-warning" />
+              Pengeluaran
+            </h1>
+            <p className="mt-1 text-xs text-muted-foreground">Catat biaya operasional agar laba bersih lebih akurat.</p>
+          </div>
         </div>
         {canManage && (
-          <Button size="sm" onClick={openAdd} className="h-9 gap-1.5">
+          <Button size="sm" onClick={openAdd} className="h-10 gap-1.5 rounded-full px-4 shadow-glow">
             <Plus className="w-4 h-4" /> Tambah
           </Button>
         )}
       </div>
 
       {/* Range filter */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 rounded-2xl border border-border/70 bg-card/80 p-2 shadow-soft">
         {(Object.keys(RANGE_LABELS) as RangePreset[]).map((r) => (
           <button
             key={r}
             onClick={() => setRange(r)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-[background-color,color,border-color,box-shadow] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
               range === r
-                ? 'border-primary bg-primary/10 text-primary'
-                : 'border-muted bg-background text-muted-foreground'
+                ? 'border-warning bg-warning/10 text-warning shadow-soft'
+                : 'border-border/70 bg-background/70 text-muted-foreground hover:text-foreground'
             }`}
           >
             {RANGE_LABELS[r]}
@@ -254,7 +258,7 @@ export default function ExpensesPage() {
       </div>
 
       {/* Total summary */}
-      <Card className="border-border/70 shadow-soft bg-warning/5">
+      <Card className="border-border/70 bg-warning/5 shadow-soft">
         <CardContent className="p-4 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-warning/15 text-warning flex items-center justify-center shrink-0">
             <Receipt className="w-5 h-5" />
@@ -270,9 +274,10 @@ export default function ExpensesPage() {
       </Card>
 
       {/* Category filter */}
-      <div className="flex items-center gap-2">
+      <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm">
+        <CardContent className="flex items-center gap-2 p-2.5">
         <Select value={filterCategoryId} onValueChange={setFilterCategoryId}>
-          <SelectTrigger className="h-10 flex-1">
+          <SelectTrigger className="h-10 flex-1 border-transparent bg-background/70">
             <SelectValue placeholder="Filter kategori" />
           </SelectTrigger>
           <SelectContent>
@@ -288,32 +293,36 @@ export default function ExpensesPage() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-10 w-10 shrink-0"
+            aria-label="Hapus filter kategori"
+            className="h-10 w-10 shrink-0 rounded-xl"
             onClick={() => setFilterCategoryId('all')}
             title="Hapus filter"
           >
             <FilterX className="w-4 h-4" />
           </Button>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       {/* List */}
       {filtered.length === 0 ? (
-        <div className="text-center py-12">
-          <Wallet className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
-          <p className="text-sm text-muted-foreground">
+        <div className="rounded-3xl border border-dashed border-border/80 bg-card/60 px-6 py-12 text-center shadow-soft">
+          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-warning/10 text-warning">
+            <Wallet className="h-7 w-7" />
+          </div>
+          <p className="text-sm font-semibold">
             {expenses && expenses.length === 0
               ? 'Belum ada pengeluaran tercatat'
               : 'Tidak ada pengeluaran sesuai filter'}
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {filtered.map((exp) => {
             const cat = getCategory(exp.categoryId);
             return (
-              <Card key={exp.id} className="border-border/70 shadow-soft">
-                <CardContent className="p-3">
+              <Card key={exp.id} className="border-border/70 shadow-soft transition-shadow hover:shadow-card">
+                <CardContent className="p-3.5">
                   <div className="flex items-start gap-3">
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-base"
@@ -373,7 +382,7 @@ export default function ExpensesPage() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-2xl sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Pengeluaran' : 'Tambah Pengeluaran'}</DialogTitle>
           </DialogHeader>
@@ -395,6 +404,8 @@ export default function ExpensesPage() {
             <div className="space-y-1.5">
               <Label>Judul *</Label>
               <Input
+                name="expense-title"
+                autoComplete="off"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Contoh: Bayar listrik bulan ini"
@@ -423,6 +434,8 @@ export default function ExpensesPage() {
               <div className="space-y-1.5">
                 <Label>Nominal *</Label>
                 <Input
+                  name="expense-amount"
+                  autoComplete="off"
                   type="number"
                   inputMode="numeric"
                   min={0}
@@ -435,6 +448,7 @@ export default function ExpensesPage() {
               <div className="space-y-1.5">
                 <Label>Tanggal *</Label>
                 <Input
+                  name="expense-date"
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}

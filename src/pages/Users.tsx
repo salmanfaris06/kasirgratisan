@@ -52,7 +52,7 @@ export default function UsersPage() {
     return (
       <div className="px-4 pt-6 pb-4">
         <div className="flex items-center gap-3 mb-4">
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" aria-label="Kembali" className="h-8 w-8" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-xl font-bold flex items-center gap-2">
@@ -79,7 +79,7 @@ export default function UsersPage() {
     return (
       <div className="px-4 pt-6 pb-4">
         <div className="flex items-center gap-3 mb-4">
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="icon" aria-label="Kembali" className="h-8 w-8" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-xl font-bold flex items-center gap-2">
@@ -229,30 +229,32 @@ export default function UsersPage() {
   });
 
   return (
-    <div className="px-4 pt-6 pb-4 space-y-4">
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => navigate(-1)}>
-          <ArrowLeft className="w-4 h-4" />
+    <div className="space-y-4 px-4 pb-4 pt-6">
+      <div className="flex items-start gap-3">
+        <Button variant="ghost" size="icon" aria-label="Kembali" className="mt-1 h-8 w-8 rounded-full" onClick={() => navigate(-1)}>
+          <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <UsersIcon className="w-5 h-5 text-primary" />
-          Karyawan & Akses
-        </h1>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/70">Akses Toko</p>
+          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <UsersIcon className="h-5 w-5 text-primary" />
+            Karyawan & Akses
+          </h1>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Atur siapa yang bisa mengakses apa di toko Anda. Pemilik selalu memiliki akses penuh.
+          </p>
+        </div>
       </div>
 
-      <p className="text-xs text-muted-foreground">
-        Atur siapa yang bisa mengakses apa di toko Anda. Pemilik selalu memiliki akses penuh.
-      </p>
-
-      <Button size="sm" className="w-full h-10 gap-1.5" onClick={openAdd}>
+      <Button size="sm" className="h-10 w-full gap-1.5 rounded-full shadow-glow" onClick={openAdd}>
         <Plus className="w-4 h-4" />
         Tambah Karyawan
       </Button>
 
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {sortedUsers.map((user) => (
-          <Card key={user.id} className="border-border/70 shadow-soft">
-            <CardContent className="p-3">
+          <Card key={user.id} className="border-border/70 shadow-soft transition-shadow hover:shadow-card">
+            <CardContent className="p-3.5">
               <div className="flex items-start gap-3">
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
@@ -295,12 +297,13 @@ export default function UsersPage() {
                   )}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(user)} title="Edit">
+                  <Button variant="ghost" size="icon" aria-label={`Edit akses ${user.name}`} className="h-7 w-7" onClick={() => openEdit(user)} title="Edit">
                     <Edit2 className="w-3.5 h-3.5" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
+                    aria-label={`Reset PIN ${user.name}`}
                     className="h-7 w-7"
                     onClick={() => openPinReset(user)}
                     title="Reset PIN"
@@ -310,6 +313,7 @@ export default function UsersPage() {
                   <Button
                     variant="ghost"
                     size="icon"
+                    aria-label={user.isActive === 1 ? `Nonaktifkan ${user.name}` : `Aktifkan ${user.name}`}
                     className="h-7 w-7"
                     onClick={() => toggleActive(user)}
                     title={user.isActive === 1 ? 'Nonaktifkan' : 'Aktifkan'}
@@ -320,6 +324,7 @@ export default function UsersPage() {
                     <Button
                       variant="ghost"
                       size="icon"
+                      aria-label={`Hapus akun ${user.name}`}
                       className="h-7 w-7 text-destructive"
                       onClick={() => setDeleteTarget(user)}
                       title="Hapus"
@@ -336,7 +341,7 @@ export default function UsersPage() {
 
       {/* Add/Edit dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-2xl sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{editing ? 'Edit Karyawan' : 'Tambah Karyawan'}</DialogTitle>
             <DialogDescription className="text-xs">
@@ -348,7 +353,7 @@ export default function UsersPage() {
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5">
               <Label>Nama Lengkap *</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Contoh: Budi Santoso" className="h-11" />
+              <Input name="employee-name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Contoh: Budi Santoso" className="h-11" />
             </div>
 
             {!editing && (
@@ -356,6 +361,8 @@ export default function UsersPage() {
                 <div className="space-y-1.5">
                   <Label>Username *</Label>
                   <Input
+                    name="employee-username"
+                    autoComplete="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ''))}
                     placeholder="Contoh: budi"
@@ -373,6 +380,8 @@ export default function UsersPage() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     maxLength={6}
+                    name="employee-pin"
+                    autoComplete="new-password"
                     value={pin}
                     onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
                     placeholder="4-6 digit"
@@ -425,7 +434,7 @@ export default function UsersPage() {
 
       {/* PIN reset dialog */}
       <Dialog open={pinDialogOpen} onOpenChange={setPinDialogOpen}>
-        <DialogContent className="max-w-[90vw] rounded-xl">
+        <DialogContent className="max-w-[90vw] rounded-2xl sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Reset PIN {pinTarget?.name}</DialogTitle>
             <DialogDescription className="text-xs">
@@ -438,6 +447,8 @@ export default function UsersPage() {
               inputMode="numeric"
               pattern="[0-9]*"
               maxLength={6}
+              name="employee-new-pin"
+              autoComplete="new-password"
               value={newPin}
               onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
               placeholder="4-6 digit"
