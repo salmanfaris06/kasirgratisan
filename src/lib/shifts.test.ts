@@ -77,7 +77,7 @@ describe('shift helpers', () => {
     });
   });
 
-  it('selects the latest open shift deterministically and surfaces duplicate active shifts', () => {
+  it('selects the latest open shift by openedAt and surfaces duplicate active shifts', () => {
     const shifts: CashierShift[] = [
       {
         id: 1,
@@ -128,6 +128,80 @@ describe('shift helpers', () => {
 
     expect(selectLatestOpenShift(shifts)?.id).toBe(2);
     expect(findDuplicateActiveShifts(shifts).map((shift) => shift.id)).toEqual([1]);
+  });
+
+  it('selects the highest id when open shifts have the same openedAt', () => {
+    const openedAt = new Date('2026-06-11T08:00:00');
+    const shifts: CashierShift[] = [
+      {
+        id: 7,
+        code: 'SHIFT-20260611-007',
+        status: 'open',
+        openedAt,
+        closedAt: null,
+        openingCash: 100000,
+        countedCash: null,
+        expectedCash: null,
+        cashDifference: null,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+      {
+        id: 9,
+        code: 'SHIFT-20260611-006',
+        status: 'open',
+        openedAt,
+        closedAt: null,
+        openingCash: 50000,
+        countedCash: null,
+        expectedCash: null,
+        cashDifference: null,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+    ];
+
+    expect(selectLatestOpenShift(shifts)?.id).toBe(9);
+  });
+
+  it('selects the highest code as final tie-breaker when openedAt matches and ids are missing', () => {
+    const openedAt = new Date('2026-06-11T08:00:00');
+    const shifts: CashierShift[] = [
+      {
+        code: 'SHIFT-20260611-001',
+        status: 'open',
+        openedAt,
+        closedAt: null,
+        openingCash: 100000,
+        countedCash: null,
+        expectedCash: null,
+        cashDifference: null,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+      {
+        code: 'SHIFT-20260611-002',
+        status: 'open',
+        openedAt,
+        closedAt: null,
+        openingCash: 50000,
+        countedCash: null,
+        expectedCash: null,
+        cashDifference: null,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+    ];
+
+    expect(selectLatestOpenShift(shifts)?.code).toBe('SHIFT-20260611-002');
   });
 
   it('calculates expected cash and cash difference on close', () => {

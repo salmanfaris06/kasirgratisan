@@ -69,7 +69,16 @@ export function getCloseShiftTotals({
 export function selectLatestOpenShift(shifts: CashierShift[]): CashierShift | undefined {
   return [...shifts]
     .filter((shift) => shift.status === 'open')
-    .sort((a, b) => new Date(b.openedAt).getTime() - new Date(a.openedAt).getTime())[0];
+    .sort((a, b) => {
+      const openedAtDiff = new Date(b.openedAt).getTime() - new Date(a.openedAt).getTime();
+      if (openedAtDiff !== 0) return openedAtDiff;
+
+      if (a.id != null && b.id != null && a.id !== b.id) {
+        return b.id - a.id;
+      }
+
+      return b.code.localeCompare(a.code);
+    })[0];
 }
 
 export function findDuplicateActiveShifts(shifts: CashierShift[]): CashierShift[] {
