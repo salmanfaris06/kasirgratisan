@@ -387,7 +387,9 @@ export default function Kasir() {
 
   const handleCheckout = async () => {
     if (!paymentMethodId || paidAmount < total) return;
-    if (!activeShift?.id) {
+
+    const currentActiveShift = await getActiveShift();
+    if (!currentActiveShift?.id) {
       toast.error('Buka shift terlebih dahulu sebelum transaksi');
       setCheckoutOpen(false);
       return;
@@ -413,7 +415,7 @@ export default function Kasir() {
         tableNumber: tableNumber.trim() || undefined,
         remarks: remarks.trim() || undefined,
         closedAt: new Date(),
-        shiftId: activeShift.id,
+        shiftId: currentActiveShift.id,
       });
 
       await db.transactionItems.where('transactionId').equals(editingTxId).delete();
@@ -480,7 +482,7 @@ export default function Kasir() {
         tableNumber: tableNumber.trim() || undefined,
         remarks: remarks.trim() || undefined,
         createdBy: currentUser?.id,
-        shiftId: activeShift.id,
+        shiftId: currentActiveShift.id,
       };
 
       const txId = await db.transactions.add(txData);
