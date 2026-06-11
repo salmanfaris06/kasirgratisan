@@ -40,3 +40,6 @@ android/.idea/
 *.aab
 *.keystore
 *.jks
+
+# Local agent worktrees
+.worktrees/
