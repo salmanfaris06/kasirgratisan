@@ -254,7 +254,7 @@ export default function ExpensesPage() {
       </div>
 
       {/* Total summary */}
-      <Card className="border-0 shadow-sm bg-warning/5">
+      <Card className="border-border/70 shadow-soft bg-warning/5">
         <CardContent className="p-4 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-warning/15 text-warning flex items-center justify-center shrink-0">
             <Receipt className="w-5 h-5" />
@@ -312,7 +312,7 @@ export default function ExpensesPage() {
           {filtered.map((exp) => {
             const cat = getCategory(exp.categoryId);
             return (
-              <Card key={exp.id} className="border-0 shadow-sm">
+              <Card key={exp.id} className="border-border/70 shadow-soft">
                 <CardContent className="p-3">
                   <div className="flex items-start gap-3">
                     <div

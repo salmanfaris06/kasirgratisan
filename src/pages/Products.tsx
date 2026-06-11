@@ -157,47 +157,52 @@ export default function Produk() {
   };
 
   return (
-    <div className="px-4 pt-6 pb-4 space-y-4">
+    <div className="space-y-5 px-4 pb-4 pt-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <PackageIcon className="w-5 h-5 text-primary" />
-          Produk
-        </h1>
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Master Data</p>
+          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <PackageIcon className="h-5 w-5 text-primary" />
+            Produk
+          </h1>
+        </div>
         {canManage && (
-          <Button size="sm" onClick={openAdd} className="h-9 gap-1.5">
-            <Plus className="w-4 h-4" />
+          <Button size="sm" onClick={openAdd} className="h-10 gap-1.5 rounded-full px-4 shadow-glow">
+            <Plus className="h-4 w-4" />
             Tambah
           </Button>
         )}
       </div>
 
       {/* Search & Filter */}
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Cari produk..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-9 h-10"
-          />
-        </div>
-        <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-[120px] h-10">
-            <SelectValue placeholder="Kategori" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Semua</SelectItem>
-            {categories?.map(c => (
-              <SelectItem key={c.id} value={c.id!.toString()}>{c.icon} {c.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm">
+        <CardContent className="flex gap-2 p-2.5">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Cari nama, SKU, atau deskripsi..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="h-10 border-transparent bg-background/70 pl-9"
+            />
+          </div>
+          <Select value={filterCategory} onValueChange={setFilterCategory}>
+            <SelectTrigger className="h-10 w-[124px] border-transparent bg-background/70">
+              <SelectValue placeholder="Kategori" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Semua</SelectItem>
+              {categories?.map(c => (
+                <SelectItem key={c.id} value={c.id!.toString()}>{c.icon} {c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </CardContent>
+      </Card>
 
       {/* Product count */}
-      <p className="text-xs text-muted-foreground">{filtered.length} produk ditemukan</p>
+      <p className="text-xs font-medium text-muted-foreground">{filtered.length} produk ditemukan</p>
 
       {/* Product List */}
       {filtered.length === 0 ? (
@@ -211,17 +216,17 @@ export default function Produk() {
           )}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {filtered.map(p => (
-            <Card key={p.id} className="border-0 shadow-sm">
+            <Card key={p.id} className="overflow-hidden border-border/70 shadow-soft transition-shadow hover:shadow-card">
               <CardContent className="p-3">
                 <div className="flex items-start gap-3">
                   {/* Product thumbnail */}
-                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-muted/70 shadow-soft">
                     {p.photo ? (
-                      <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
+                      <img src={p.photo} alt={p.name} className="h-full w-full object-cover" />
                     ) : (
-                      <PackageIcon className="w-5 h-5 text-muted-foreground/40" />
+                      <PackageIcon className="h-5 w-5 text-muted-foreground/40" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -257,11 +262,11 @@ export default function Produk() {
                   <div className="flex flex-col gap-1">
                     {canManage ? (
                       <>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(p)}>
-                          <Edit2 className="w-3.5 h-3.5" />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>
+                          <Edit2 className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => setDeleteId(p.id!)}>
-                          <Trash2 className="w-3.5 h-3.5" />
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(p.id!)}>
+                          <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </>
                     ) : null}
@@ -275,17 +280,18 @@ export default function Produk() {
 
       {/* Add/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{editProduct ? 'Edit Produk' : 'Tambah Produk'}</DialogTitle>
+        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto rounded-2xl p-0 sm:max-w-xl">
+          <DialogHeader className="border-b border-border/70 px-5 py-4 text-left">
+            <DialogTitle className="text-xl font-extrabold tracking-tight">{editProduct ? 'Edit Produk' : 'Tambah Produk'}</DialogTitle>
+            <p className="text-sm text-muted-foreground">Lengkapi informasi produk agar kasir lebih cepat saat transaksi.</p>
           </DialogHeader>
-          <div className="space-y-4 mt-2">
+          <div className="space-y-4 p-5">
             {/* Photo picker */}
-            <div className="space-y-1.5">
+            <div className="rounded-2xl border border-border/70 bg-muted/20 p-3">
               <Label>Foto Produk</Label>
-              <div className="flex items-center gap-3">
+              <div className="mt-2 flex items-center gap-3">
                 <div
-                  className="w-20 h-20 rounded-xl bg-muted border-2 border-dashed border-border flex items-center justify-center overflow-hidden cursor-pointer hover:border-primary/50 transition-colors"
+                  className="flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-border bg-background transition-colors hover:border-primary/50"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {photo ? (
@@ -361,7 +367,7 @@ export default function Produk() {
                 <Input type="number" value={hpp} onChange={e => setHpp(e.target.value)} placeholder="10000" className="h-11" />
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-xl border border-border p-3">
+            <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/20 p-3">
               <div className="space-y-0.5 pr-3">
                 <Label className="text-sm">Kelola Stok</Label>
                 <p className="text-[11px] text-muted-foreground leading-snug">
@@ -422,7 +428,9 @@ export default function Produk() {
               />
               <p className="text-[10px] text-muted-foreground text-right">{description.length}/500</p>
             </div>
-            <Button className="w-full h-12 text-base font-semibold" onClick={handleSave} disabled={!name.trim() || !categoryId || !sku.trim()}>
+          </div>
+          <div className="sticky bottom-0 border-t border-border/70 bg-background/95 p-4 backdrop-blur-xl">
+            <Button className="h-12 w-full text-base font-semibold shadow-glow" onClick={handleSave} disabled={!name.trim() || !categoryId || !sku.trim()}>
               {editProduct ? 'Simpan Perubahan' : 'Tambah Produk'}
             </Button>
           </div>
@@ -431,7 +439,7 @@ export default function Produk() {
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent className="max-w-[90vw] rounded-xl">
+        <AlertDialogContent className="max-w-[90vw] rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Produk?</AlertDialogTitle>
             <AlertDialogDescription>Produk yang dihapus tidak bisa dikembalikan.</AlertDialogDescription>

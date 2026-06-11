@@ -98,11 +98,11 @@ export default function Dashboard() {
   const visibleActions = quickActions.filter((a) => !a.perm || can(a.perm));
 
   return (
-    <div className="px-4 pt-6 space-y-5">
+    <div className="px-4 pt-6 space-y-6">
       {/* Header */}
-      <div>
-        <p className="text-sm text-muted-foreground">{format(new Date(), 'EEEE, d MMMM yyyy', { locale: id })}</p>
-        <h1 className="text-2xl font-bold tracking-tight">{storeSettings?.storeName || 'KasirGratisan'}</h1>
+      <div className="space-y-1">
+        <p className="text-sm font-medium text-muted-foreground">{format(new Date(), 'EEEE, d MMMM yyyy', { locale: id })}</p>
+        <h1 className="text-2xl font-extrabold tracking-tight">{storeSettings?.storeName || 'KasirGratisan'}</h1>
       </div>
 
       {/* Backup Reminder */}
@@ -115,45 +115,70 @@ export default function Dashboard() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="border-0 shadow-sm bg-primary text-primary-foreground">
-          <CardContent className="p-4">
-            <p className="text-xs opacity-80">Penjualan Hari Ini</p>
-            <p className="text-xl font-bold mt-1">Rp {totalSales.toLocaleString('id-ID')}</p>
-            <p className="text-xs opacity-70 mt-1">{txCount} transaksi</p>
+      <section className="space-y-3">
+        <Card className="overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-glow">
+          <CardContent className="relative p-5 md:p-6">
+            <div className="absolute -right-10 -top-12 h-36 w-36 rounded-full bg-white/15 blur-2xl" />
+            <div className="absolute -bottom-16 right-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
+            <div className="relative flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/75">Penjualan Hari Ini</p>
+                <p className="mt-2 text-3xl font-extrabold tracking-tight md:text-4xl">Rp {totalSales.toLocaleString('id-ID')}</p>
+                <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-primary-foreground/85">
+                  <span className="rounded-full bg-white/15 px-3 py-1">{txCount} transaksi</span>
+                  {can('view_reports') && <span className="rounded-full bg-white/15 px-3 py-1">Profit Rp {totalProfit.toLocaleString('id-ID')}</span>}
+                </div>
+              </div>
+              <div className="rounded-2xl bg-white/15 p-3 shadow-soft backdrop-blur-sm">
+                <TrendingUp className="h-6 w-6" />
+              </div>
+            </div>
           </CardContent>
         </Card>
-        {can('view_reports') && (
-          <Card className="border-0 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-1.5 text-success">
-                <TrendingUp className="w-4 h-4" />
-                <p className="text-xs font-medium">Profit Hari Ini</p>
-              </div>
-              <p className="text-xl font-bold mt-1">Rp {totalProfit.toLocaleString('id-ID')}</p>
-            </CardContent>
-          </Card>
-        )}
-        {(can('view_expenses') || can('manage_expenses')) && (
-          <Link to="/expenses" className="contents">
-            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+          {can('view_reports') && (
+            <Card className="border-border/70 shadow-soft">
               <CardContent className="p-4">
-                <div className="flex items-center gap-1.5 text-warning">
-                  <Wallet className="w-4 h-4" />
-                  <p className="text-xs font-medium">Pengeluaran Hari Ini</p>
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
+                  <TrendingUp className="h-4 w-4" />
                 </div>
-                <p className="text-xl font-bold mt-1">Rp {totalExpensesToday.toLocaleString('id-ID')}</p>
-                <p className="text-xs text-muted-foreground mt-1">{expenseCount} catatan</p>
+                <p className="text-xs font-medium text-muted-foreground">Profit Hari Ini</p>
+                <p className="mt-1 text-lg font-bold tracking-tight">Rp {totalProfit.toLocaleString('id-ID')}</p>
               </CardContent>
             </Card>
-          </Link>
-        )}
-      </div>
+          )}
+          {(can('view_expenses') || can('manage_expenses')) && (
+            <Link to="/expenses" className="contents">
+              <Card className="border-border/70 shadow-soft transition-shadow hover:shadow-card">
+                <CardContent className="p-4">
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-warning/10 text-warning">
+                    <Wallet className="h-4 w-4" />
+                  </div>
+                  <p className="text-xs font-medium text-muted-foreground">Pengeluaran</p>
+                  <p className="mt-1 text-lg font-bold tracking-tight">Rp {totalExpensesToday.toLocaleString('id-ID')}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{expenseCount} catatan</p>
+                </CardContent>
+              </Card>
+            </Link>
+          )}
+          <Card className="border-border/70 shadow-soft">
+            <CardContent className="p-4">
+              <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Receipt className="h-4 w-4" />
+              </div>
+              <p className="text-xs font-medium text-muted-foreground">Transaksi</p>
+              <p className="mt-1 text-lg font-bold tracking-tight">{txCount}</p>
+              <p className="mt-1 text-xs text-muted-foreground">hari ini</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
 
       {/* Open Bills */}
       {openBillsCount != null && openBillsCount > 0 && (
         <Link to="/cashier">
-          <Card className="border-0 shadow-sm bg-warning/10 hover:shadow-md transition-shadow cursor-pointer mt-2">
+          <Card className="border-border/70 shadow-soft bg-warning/10 hover:shadow-card transition-shadow cursor-pointer mt-2">
             <CardContent className="p-4 flex items-center gap-4">
               <div className="w-10 h-10 rounded-xl bg-warning/20 text-warning flex items-center justify-center shrink-0">
                 <ClipboardList className="w-5 h-5" />
@@ -170,23 +195,26 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       {visibleActions.length > 0 && (
-        <div>
-          <h2 className="text-sm font-semibold text-muted-foreground mb-3">Akses Cepat</h2>
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold tracking-tight">Akses Cepat</h2>
+            <span className="text-xs text-muted-foreground">Operasi utama</span>
+          </div>
           <div className={`grid gap-3 ${visibleActions.length === 1 ? 'grid-cols-1' : visibleActions.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
             {visibleActions.map(({ to, icon: Icon, label, color }) => (
               <Link key={to} to={to}>
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
-                  <CardContent className="p-4 flex flex-col items-center gap-2">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${color}`}>
-                      <Icon className="w-5 h-5" />
+                <Card className="group border-border/70 shadow-soft transition-[box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-card active:translate-y-0 active:scale-[0.99]">
+                  <CardContent className="flex flex-col items-center gap-3 p-4">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition-transform duration-150 ease-out group-hover:scale-105 ${color}`}>
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <span className="text-xs font-semibold">{label}</span>
+                    <span className="text-xs font-bold">{label}</span>
                   </CardContent>
                 </Card>
               </Link>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Recent Transactions */}
@@ -206,7 +234,7 @@ export default function Dashboard() {
           <div className="space-y-2">
             {recentTransactions.map(tx => (
               <Link key={tx.id ?? tx.receiptNumber} to={`/history?txId=${tx.id ?? tx.receiptNumber}`}>
-                <Card className="border-0 shadow-sm hover:shadow-md transition-shadow mb-2">
+                <Card className="border-border/70 shadow-soft hover:shadow-card transition-shadow mb-2">
                   <CardContent className="p-3 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                       <Receipt className="w-4 h-4" />
@@ -231,24 +259,32 @@ export default function Dashboard() {
 
       {/* Low Stock Alert */}
       {lowStockProducts && lowStockProducts.length > 0 && (
-        <div>
-          <h2 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
-            <AlertTriangle className="w-4 h-4 text-warning" />
-            Stok Menipis
-          </h2>
-          <div className="space-y-2">
-            {lowStockProducts.slice(0, 5).map(product => (
-              <Card key={product.id} className="border-0 shadow-sm">
-                <CardContent className="p-3 flex items-center justify-between">
-                  <span className="text-sm font-medium">{product.name}</span>
-                  <span className="text-xs font-bold text-destructive bg-destructive/10 px-2 py-1 rounded-full">
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-1.5 text-sm font-bold tracking-tight">
+              <AlertTriangle className="h-4 w-4 text-warning" />
+              Stok Menipis
+            </h2>
+            <Link to="/products" className="text-xs font-semibold text-primary">
+              Kelola
+            </Link>
+          </div>
+          <Card className="border-warning/30 bg-warning/5 shadow-soft">
+            <CardContent className="divide-y divide-border/60 p-0">
+              {lowStockProducts.slice(0, 5).map(product => (
+                <div key={product.id} className="flex items-center justify-between gap-3 p-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">{product.name}</p>
+                    <p className="text-xs text-muted-foreground">Segera tambah stok</p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-destructive/10 px-2.5 py-1 text-xs font-bold text-destructive">
                     Sisa {product.stock} {product.unit}
                   </span>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </section>
       )}
 
       <WhatsNewModal

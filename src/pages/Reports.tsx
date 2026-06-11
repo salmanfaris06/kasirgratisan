@@ -161,7 +161,7 @@ export default function Laporan() {
       </Tabs>
 
       {period === 'daily' && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-4 space-y-3">
             <div className="space-y-1.5">
               <Label htmlFor="report-date" className="text-xs">Tanggal Laporan</Label>
@@ -184,21 +184,21 @@ export default function Laporan() {
       )}
 
       <div className="grid grid-cols-3 gap-2">
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
             <ShoppingCart className="w-4 h-4 mx-auto text-primary mb-1" />
             <p className="text-lg font-bold">{txCount}</p>
             <p className="text-[10px] text-muted-foreground">Transaksi</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
             <TrendingUp className="w-4 h-4 mx-auto text-success mb-1" />
             <p className="text-sm font-bold">{rp(totalSales)}</p>
             <p className="text-[10px] text-muted-foreground">Penjualan</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
             <TrendingUp className="w-4 h-4 mx-auto text-accent mb-1" />
             <p className="text-sm font-bold">{rp(totalProfit)}</p>
@@ -208,7 +208,7 @@ export default function Laporan() {
       </div>
 
       {period === 'daily' && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-1.5">
               <CreditCard className="w-4 h-4" />
@@ -243,7 +243,7 @@ export default function Laporan() {
         </Card>
       )}
 
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5">
             <DollarSign className="w-4 h-4" />
@@ -307,7 +307,7 @@ export default function Laporan() {
       </Card>
 
       {topExpenseCategories.length > 0 && includeExpenses && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-1.5">
               <Wallet className="w-4 h-4" />
@@ -342,7 +342,7 @@ export default function Laporan() {
       )}
 
       {period !== 'daily' && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm">Tren Penjualan</CardTitle>
           </CardHeader>
@@ -359,7 +359,7 @@ export default function Laporan() {
         </Card>
       )}
 
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5">
             <Package className="w-4 h-4" />

@@ -60,7 +60,7 @@ export default function UsersPage() {
             Karyawan & Akses
           </h1>
         </div>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-6 text-center space-y-2">
             <p className="text-sm font-semibold">Multi-user belum aktif</p>
             <p className="text-xs text-muted-foreground">
@@ -87,7 +87,7 @@ export default function UsersPage() {
             Karyawan & Akses
           </h1>
         </div>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-6 text-center text-sm text-muted-foreground">
             Hanya pemilik toko yang dapat mengelola karyawan.
           </CardContent>
@@ -251,7 +251,7 @@ export default function UsersPage() {
 
       <div className="space-y-2">
         {sortedUsers.map((user) => (
-          <Card key={user.id} className="border-0 shadow-sm">
+          <Card key={user.id} className="border-border/70 shadow-soft">
             <CardContent className="p-3">
               <div className="flex items-start gap-3">
                 <div

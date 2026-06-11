@@ -130,7 +130,7 @@ export default function StockInPage() {
       ) : (
         <div className="space-y-2">
           {filtered.map(si => (
-            <Card key={si.id} className="border-0 shadow-sm">
+            <Card key={si.id} className="border-border/70 shadow-soft">
               <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div>

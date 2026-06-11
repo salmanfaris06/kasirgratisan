@@ -104,21 +104,21 @@ export default function StockReport() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-2">
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
             <ArrowDownToLine className="w-4 h-4 mx-auto text-success mb-1" />
             <p className="text-lg font-bold">{totalStockIn}</p>
             <p className="text-[10px] text-muted-foreground">Masuk</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
             <ArrowUpFromLine className="w-4 h-4 mx-auto text-destructive mb-1" />
             <p className="text-lg font-bold">{totalStockOut}</p>
             <p className="text-[10px] text-muted-foreground">Keluar</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
             <Package className="w-4 h-4 mx-auto text-primary mb-1" />
             <p className="text-lg font-bold">{currentStock}</p>
@@ -128,7 +128,7 @@ export default function StockReport() {
       </div>
 
       {/* Stock In Value */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5">
             <TrendingUp className="w-4 h-4 text-success" />
@@ -147,7 +147,7 @@ export default function StockReport() {
       </Card>
 
       {/* Stock Movement Chart */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5">
             <BarChart3 className="w-4 h-4" />
@@ -173,7 +173,7 @@ export default function StockReport() {
 
       {/* Stock Out by Reason */}
       {Object.keys(stockOutByReason).length > 0 && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-1.5">
               <ArrowUpFromLine className="w-4 h-4 text-destructive" />
@@ -193,7 +193,7 @@ export default function StockReport() {
 
       {/* Low Stock Alert */}
       {lowStockProducts.length > 0 && (
-        <Card className="border-0 shadow-sm border-warning/50">
+        <Card className="border-border/70 shadow-soft border-warning/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-1.5 text-warning">
               <AlertTriangle className="w-4 h-4" />
@@ -216,7 +216,7 @@ export default function StockReport() {
 
       {/* Out of Stock */}
       {outOfStockProducts.length > 0 && (
-        <Card className="border-0 shadow-sm border-destructive/50">
+        <Card className="border-border/70 shadow-soft border-destructive/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center gap-1.5 text-destructive">
               <Package className="w-4 h-4" />

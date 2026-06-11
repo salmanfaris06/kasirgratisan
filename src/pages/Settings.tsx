@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type PaymentMethod, type Category, type Unit, type ExpenseCategory, type Product } from '@/lib/db';
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Settings, Store, CreditCard, Tag, Download, Upload, Plus, Trash2, Edit2, Info, Truck, ArrowDownToLine, ArrowUpFromLine, ChevronRight, Receipt, Palette, HardDrive, Package, Camera, X, Ruler, Users as UsersIcon, ShieldCheck, LogOut, Smartphone, CheckCircle2, Globe, Share2, Wallet, Sparkles, LineChart } from 'lucide-react';
+import { Settings, Store, CreditCard, Tag, Download, Upload, Plus, Trash2, Edit2, Info, Truck, ArrowDownToLine, ArrowUpFromLine, ChevronRight, Receipt, Palette, HardDrive, Package, Camera, X, Ruler, Users as UsersIcon, ShieldCheck, LogOut, Smartphone, CheckCircle2, Globe, Share2, Wallet, Sparkles, LineChart, Sun, Moon, Monitor } from 'lucide-react';
 import WhatsNewModal from '@/components/WhatsNewModal';
 import { FEATURES, getUnseenFeatures } from '@/lib/whats-new';
 import ThemeColorPicker from '@/components/ThemeColorPicker';
@@ -25,6 +25,7 @@ import { usePWAInstall } from '@/hooks/use-pwa-install';
 import { isNativePlatform, getDefaultBluetoothPrinter, setDefaultBluetoothPrinter, listPairedBluetoothDevices, type BluetoothPrinter } from '@/lib/printer';
 import { Printer } from 'lucide-react';
 import { APP_VERSION } from '@/lib/app-version';
+import { useTheme } from 'next-themes';
 
 export default function Pengaturan() {
   const isNative = isNativePlatform();
@@ -38,6 +39,7 @@ export default function Pengaturan() {
   );
 
   const { multiUserEnabled, currentUser, isOwner, can, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   // PWA install
   const { canInstall, isInstalled, isIOS, install } = usePWAInstall();
@@ -570,7 +572,7 @@ export default function Pengaturan() {
 
       {/* Store Info */}
       <Card
-        className={`border-0 shadow-sm ${can('manage_store_settings') ? 'cursor-pointer' : 'cursor-default opacity-90'}`}
+        className={`border-border/70 shadow-soft ${can('manage_store_settings') ? 'cursor-pointer' : 'cursor-default opacity-90'}`}
         onClick={() => can('manage_store_settings') && openStoreEdit()}
       >
         <CardContent className="p-4 flex items-center gap-3">
@@ -591,7 +593,7 @@ export default function Pengaturan() {
 
       {/* Install as App — hidden when already installed */}
       {!isInstalled && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <Smartphone className="w-4 h-4" />
@@ -630,7 +632,7 @@ export default function Pengaturan() {
 
       {/* Karyawan & Akses (current user / multi-user activation) */}
       {multiUserEnabled && currentUser ? (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-border/70 shadow-soft">
           <CardContent className="p-4 flex items-center gap-3">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${currentUser.role === 'owner' ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'}`}>
               <ShieldCheck className="w-5 h-5" />
@@ -654,7 +656,7 @@ export default function Pengaturan() {
         <div className="space-y-2">
           <h2 className="text-sm font-semibold text-muted-foreground">Karyawan & Akses</h2>
           {!multiUserEnabled ? (
-            <Card className="border-0 shadow-sm">
+            <Card className="border-border/70 shadow-soft">
               <CardContent className="p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <UsersIcon className="w-4 h-4" />
@@ -673,7 +675,7 @@ export default function Pengaturan() {
           ) : (
             <>
               <Link to="/users">
-                <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+                <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
                   <CardContent className="p-3 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><UsersIcon className="w-4 h-4" /></div>
                     <div className="flex-1">
@@ -684,7 +686,7 @@ export default function Pengaturan() {
                   </CardContent>
                 </Card>
               </Link>
-              <Card className="border-0 shadow-sm">
+              <Card className="border-border/70 shadow-soft">
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                     <ShieldCheck className="w-4 h-4" />
@@ -707,7 +709,7 @@ export default function Pengaturan() {
       <div className="space-y-2">
         <h2 className="text-sm font-semibold text-muted-foreground">Transaksi & Stok</h2>
         <Link to="/history">
-          <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+          <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
             <CardContent className="p-3 flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><Receipt className="w-4 h-4" /></div>
               <div className="flex-1"><p className="text-sm font-semibold">Riwayat Transaksi</p><p className="text-[10px] text-muted-foreground">Lihat semua transaksi & cetak ulang struk</p></div>
@@ -717,7 +719,7 @@ export default function Pengaturan() {
         </Link>
         {can('manage_supplier') && (
           <Link to="/supplier">
-            <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+            <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
               <CardContent className="p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-accent/10 text-accent flex items-center justify-center"><Truck className="w-4 h-4" /></div>
                 <div className="flex-1"><p className="text-sm font-semibold">Supplier</p><p className="text-[10px] text-muted-foreground">Kelola data supplier</p></div>
@@ -728,7 +730,7 @@ export default function Pengaturan() {
         )}
         {can('manage_customers') && (
           <Link to="/customers">
-            <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+            <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
               <CardContent className="p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><UsersIcon className="w-4 h-4" /></div>
                 <div className="flex-1"><p className="text-sm font-semibold">Pelanggan</p><p className="text-[10px] text-muted-foreground">Kelola data pelanggan</p></div>
@@ -740,7 +742,7 @@ export default function Pengaturan() {
         {can('manage_stock_inout') && (
           <>
             <Link to="/stock-in">
-              <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+              <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-success/10 text-success flex items-center justify-center"><ArrowDownToLine className="w-4 h-4" /></div>
                   <div className="flex-1"><p className="text-sm font-semibold">Stock In</p><p className="text-[10px] text-muted-foreground">Catat barang masuk & HPP otomatis</p></div>
@@ -749,7 +751,7 @@ export default function Pengaturan() {
               </Card>
             </Link>
             <Link to="/stock-out">
-              <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+              <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-destructive/10 text-destructive flex items-center justify-center"><ArrowUpFromLine className="w-4 h-4" /></div>
                   <div className="flex-1"><p className="text-sm font-semibold">Stock Out</p><p className="text-[10px] text-muted-foreground">Catat barang keluar non-penjualan</p></div>
@@ -761,7 +763,7 @@ export default function Pengaturan() {
         )}
         {(can('manage_expenses') || can('view_expenses')) && (
           <Link to="/expenses">
-            <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow mb-2">
+            <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
               <CardContent className="p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-warning/10 text-warning flex items-center justify-center"><Wallet className="w-4 h-4" /></div>
                 <div className="flex-1"><p className="text-sm font-semibold">Pengeluaran</p><p className="text-[10px] text-muted-foreground">Catat biaya operasional non-stok (listrik, gaji, sewa, dll)</p></div>
@@ -772,7 +774,7 @@ export default function Pengaturan() {
         )}
         {can('view_reports') && (
           <Link to="/stock-report">
-            <Card className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow">
+            <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow">
               <CardContent className="p-3 flex items-center gap-3">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center"><Package className="w-4 h-4" /></div>
                 <div className="flex-1"><p className="text-sm font-semibold">Laporan Stok</p><p className="text-[10px] text-muted-foreground">Lihat pergerakan stok per periode</p></div>
@@ -785,7 +787,7 @@ export default function Pengaturan() {
 
       {/* Payment Methods */}
       {can('manage_categories_payments') && (
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-1.5"><CreditCard className="w-4 h-4" /> Metode Pembayaran</CardTitle>
@@ -811,7 +813,7 @@ export default function Pengaturan() {
 
       {/* Categories */}
       {can('manage_categories_payments') && (
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-1.5"><Tag className="w-4 h-4" /> Kategori Produk</CardTitle>
@@ -837,7 +839,7 @@ export default function Pengaturan() {
 
       {/* Expense Categories */}
       {can('manage_categories_payments') && (
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-1.5"><Wallet className="w-4 h-4" /> Kategori Pengeluaran</CardTitle>
@@ -865,7 +867,7 @@ export default function Pengaturan() {
       )}
 
       {/* Units */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-1.5"><Ruler className="w-4 h-4" /> Satuan</CardTitle>
@@ -890,7 +892,7 @@ export default function Pengaturan() {
 
       {/* Bluetooth Printer (APK only) */}
       {isNative && can('manage_store_settings') && (
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5"><Printer className="w-4 h-4" /> Printer Bluetooth</CardTitle>
         </CardHeader>
@@ -945,24 +947,54 @@ export default function Pengaturan() {
       </Card>
       )}
 
-      {/* Theme Color */}
-      {can('manage_store_settings') && (
-      <Card className="border-0 shadow-sm">
+      {/* Appearance */}
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-1.5"><Palette className="w-4 h-4" /> Warna Tema</CardTitle>
+          <CardTitle className="text-sm flex items-center gap-1.5"><Palette className="w-4 h-4" /> Tampilan</CardTitle>
         </CardHeader>
-        <CardContent>
-          <ThemeColorPicker
-            value={storeSettings?.themeColor ?? '25'}
-            onChange={hue => setThemeColor(hue)}
-          />
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label className="text-sm">Mode Warna</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: 'system', label: 'Sistem', icon: Monitor },
+                { value: 'light', label: 'Terang', icon: Sun },
+                { value: 'dark', label: 'Gelap', icon: Moon },
+              ].map(({ value, label, icon: Icon }) => {
+                const active = (theme ?? 'system') === value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setTheme(value)}
+                    className={`flex flex-col items-center gap-1.5 rounded-2xl border px-3 py-3 text-xs font-semibold transition-[background-color,color,border-color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] ${active ? 'border-primary bg-primary/10 text-primary shadow-glow' : 'border-border/70 bg-background/70 text-muted-foreground hover:text-foreground hover:shadow-soft'}`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[11px] leading-snug text-muted-foreground">
+              Pilih “Sistem” agar mengikuti pengaturan perangkat, atau pakai “Gelap” untuk tampilan kasir yang lebih nyaman di ruangan redup.
+            </p>
+          </div>
+
+          {can('manage_store_settings') && (
+            <div className="space-y-2 border-t border-border/70 pt-4">
+              <Label className="text-sm">Warna Tema</Label>
+              <ThemeColorPicker
+                value={storeSettings?.themeColor ?? '25'}
+                onChange={hue => setThemeColor(hue)}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
-      )}
 
       {/* Backup & Restore */}
       {can('manage_backup') && (
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5"><Download className="w-4 h-4" /> Backup & Restore</CardTitle>
         </CardHeader>
@@ -981,7 +1013,7 @@ export default function Pengaturan() {
       )}
 
       {/* Privasi & Analitik */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-1.5"><LineChart className="w-4 h-4" /> Privasi & Analitik</CardTitle>
         </CardHeader>
@@ -999,7 +1031,7 @@ export default function Pengaturan() {
       </Card>
 
       {/* About */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardContent className="p-4 text-center space-y-2">
            <p className="text-sm font-bold">KasirGratisan</p>
            <p className="text-xs text-muted-foreground">POS Gratis untuk UMKM Indonesia 🇮🇩</p>

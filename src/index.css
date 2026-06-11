@@ -40,6 +40,12 @@
     --input: 215 20% 90%;
     --ring: 25 95% 53%;
 
+    --shadow-color: 215 25% 12%;
+    --shadow-soft-opacity: 0.06;
+    --shadow-card-opacity: 0.08;
+    --shadow-floating-opacity: 0.14;
+    --surface-glass: 0 0% 100%;
+
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
@@ -83,9 +89,15 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 215 20% 20%;
-    --input: 215 20% 20%;
+    --border: 215 20% 22%;
+    --input: 215 20% 22%;
     --ring: 25 95% 53%;
+
+    --shadow-color: 0 0% 0%;
+    --shadow-soft-opacity: 0.20;
+    --shadow-card-opacity: 0.26;
+    --shadow-floating-opacity: 0.34;
+    --surface-glass: 215 25% 12%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -105,10 +117,15 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    background-image: radial-gradient(circle at top, hsl(var(--primary) / 0.08), transparent 32rem);
     font-family: 'Plus Jakarta Sans', sans-serif;
     -webkit-tap-highlight-color: transparent;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
+  }
+
+  .dark body {
+    background-image: radial-gradient(circle at top, hsl(var(--primary) / 0.12), transparent 34rem);
   }
 
   html, body {

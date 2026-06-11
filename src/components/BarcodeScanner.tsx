@@ -324,7 +324,7 @@ export default function BarcodeScanner({ open, onClose, onScan }: BarcodeScanner
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-10 w-10 rounded-full shadow-lg"
+                className="h-10 w-10 rounded-full shadow-floating"
                 onClick={toggleFlash}
               >
                 <Flashlight className={`w-5 h-5 ${flashOn ? 'text-yellow-400' : ''}`} />

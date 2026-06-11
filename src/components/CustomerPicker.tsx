@@ -95,7 +95,7 @@ export default function CustomerPicker({ customers, value, customerId, onChange,
       )}
 
       {open && (matches.length > 0 || canQuickCreate) && (
-        <div className="absolute z-50 left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-lg border border-border bg-popover shadow-lg">
+        <div className="absolute z-50 left-0 right-0 mt-1 max-h-56 overflow-y-auto rounded-lg border border-border bg-popover shadow-floating">
           {matches.slice(0, 8).map(c => (
             <button
               key={c.id}

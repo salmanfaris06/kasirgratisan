@@ -100,7 +100,7 @@ export default function StockOutPage() {
       ) : (
         <div className="space-y-2">
           {stockOuts.map(so => (
-            <Card key={so.id} className="border-0 shadow-sm">
+            <Card key={so.id} className="border-border/70 shadow-soft">
               <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div>

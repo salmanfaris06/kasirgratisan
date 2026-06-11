@@ -12,8 +12,8 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-lg pb-[env(safe-area-inset-bottom)]">
-      <div className="flex items-end justify-around h-16 max-w-lg md:max-w-6xl mx-auto px-2 md:px-4">
+    <nav className="fixed bottom-3 left-3 right-3 z-50 rounded-3xl border border-border/70 bg-card/90 shadow-floating backdrop-blur-xl pb-[env(safe-area-inset-bottom)] md:left-1/2 md:right-auto md:w-[calc(100%-1.5rem)] md:max-w-6xl md:-translate-x-1/2">
+      <div className="flex items-end justify-around h-16 px-2 md:px-4">
         {navItems.map(({ to, icon: Icon, label, isCta }) => (
           <NavLink
             key={to}
@@ -21,7 +21,7 @@ export default function BottomNav() {
             end={to === '/'}
             className={({ isActive }) =>
               cn(
-                'flex flex-col items-center gap-0.5 transition-colors min-w-[52px]',
+                'flex flex-col items-center gap-0.5 min-w-[52px] transition-[color,transform] duration-150 ease-out active:scale-[0.97]',
                 isCta
                   ? 'relative -top-4'
                   : cn(
@@ -37,7 +37,7 @@ export default function BottomNav() {
               isCta ? (
                 <>
                   <div className={cn(
-                    'w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95',
+                    'w-14 h-14 rounded-full flex items-center justify-center shadow-glow transition-transform duration-150 ease-out active:scale-95',
                     'bg-primary text-primary-foreground',
                     isActive && 'ring-4 ring-primary/20'
                   )}>

@@ -72,6 +72,12 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        soft: "0 1px 2px hsl(var(--shadow-color) / 0.04), 0 10px 28px hsl(var(--shadow-color) / var(--shadow-soft-opacity))",
+        card: "0 1px 2px hsl(var(--shadow-color) / 0.05), 0 16px 40px hsl(var(--shadow-color) / var(--shadow-card-opacity))",
+        floating: "0 10px 30px hsl(var(--shadow-color) / 0.10), 0 28px 72px hsl(var(--shadow-color) / var(--shadow-floating-opacity))",
+        glow: "0 0 0 1px hsl(var(--primary) / 0.16), 0 12px 32px hsl(var(--primary) / 0.24)",
+      },
       keyframes: {
         "accordion-down": {
           from: {

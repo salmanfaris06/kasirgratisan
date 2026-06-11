@@ -19,7 +19,7 @@ export default function ThemeColorPicker({ value, onChange }: ThemeColorPickerPr
             onClick={() => onChange(color.hue)}
             className={cn(
               'w-11 h-11 rounded-xl flex items-center justify-center transition-all border-2',
-              isActive ? 'scale-110 shadow-lg border-foreground/30' : 'border-transparent hover:scale-105'
+              isActive ? 'scale-110 shadow-floating border-foreground/30' : 'border-transparent hover:scale-105'
             )}
             style={{ backgroundColor: `hsl(${hsl})` }}
             title={color.name}

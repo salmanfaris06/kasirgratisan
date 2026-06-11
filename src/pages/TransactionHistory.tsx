@@ -276,13 +276,13 @@ export default function TransactionHistory() {
       {/* Summary */}
       {filtered.length > 0 && (
         <div className="grid grid-cols-2 gap-2 mb-4">
-          <Card className="border-0 shadow-sm">
+          <Card className="border-border/70 shadow-soft">
             <CardContent className="p-3 text-center">
               <p className="text-[10px] text-muted-foreground">Total Transaksi</p>
               <p className="text-lg font-bold text-primary">{filtered.length}</p>
             </CardContent>
           </Card>
-          <Card className="border-0 shadow-sm">
+          <Card className="border-border/70 shadow-soft">
             <CardContent className="p-3 text-center">
               <p className="text-[10px] text-muted-foreground">Total Penjualan</p>
               <p className="text-lg font-bold text-primary">{rp(filteredTotal)}</p>
@@ -316,7 +316,7 @@ export default function TransactionHistory() {
                 {grouped[dateKey].map(tx => (
                   <Card
                     key={tx.id ?? tx.receiptNumber}
-                    className="border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow active:scale-[0.99]"
+                    className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow active:scale-[0.99]"
                     onClick={() => openDetail(tx)}
                   >
                     <CardContent className="p-3 flex items-center gap-3">

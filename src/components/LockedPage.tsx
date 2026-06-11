@@ -36,7 +36,7 @@ export default function LockedPage({ title, permissionLabel }: LockedPageProps) 
         {title}
       </h1>
 
-      <Card className="border-0 shadow-sm">
+      <Card className="border-border/70 shadow-soft">
         <CardContent className="p-6 flex flex-col items-center text-center gap-3">
           <div className="w-16 h-16 rounded-2xl bg-warning/10 text-warning flex items-center justify-center">
             <ShieldAlert className="w-8 h-8" />
