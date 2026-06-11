@@ -65,16 +65,21 @@ export default function ShiftReportReceipt({
     try {
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob) return;
-      if (navigator.share) {
-        const file = new File([blob], `laporan-shift-${shift.code}.png`, { type: 'image/png' });
-        await navigator.share({
-          title: `Laporan Shift ${shift.code}`,
-          text: `Laporan tutup kasir ${storeSettings?.storeName || 'Toko'}`,
-          files: [file],
-        });
-      } else {
+      const file = new File([blob], `laporan-shift-${shift.code}.png`, { type: 'image/png' });
+      const canShareFiles =
+        !!navigator.share &&
+        (!navigator.canShare || navigator.canShare({ files: [file] }));
+
+      if (!canShareFiles) {
         await handleDownload();
+        return;
       }
+
+      await navigator.share({
+        title: `Laporan Shift ${shift.code}`,
+        text: `Laporan tutup kasir ${storeSettings?.storeName || 'Toko'}`,
+        files: [file],
+      });
     } catch (err: unknown) {
       if (err instanceof Error && err.name !== 'AbortError') {
         toast.error('Gagal membagikan laporan shift');
