@@ -225,6 +225,10 @@ export interface StoreSettings {
   seenWhatsNewIds?: string[]; // IDs of "What's New" features the user has dismissed
 }
 
+type LegacyTransactionItem = Omit<TransactionItemRecord, 'id' | 'transactionId'>;
+type LegacyTransactionWithItems = Transaction & { items?: LegacyTransactionItem[] };
+type MigratingProduct = Partial<Product> & Pick<Product, 'id'>;
+
 // === Database ===
 
 class PosDatabase extends Dexie {
@@ -275,26 +279,26 @@ class PosDatabase extends Dexie {
     }).upgrade(async (tx) => {
       // CR-2: Set soft delete defaults on existing records
       const catTable = tx.table('categories');
-      await catTable.toCollection().modify((cat: any) => {
+      await catTable.toCollection().modify((cat: Partial<Category>) => {
         cat.isDeleted = 0;
         cat.deletedAt = null;
       });
 
       const prodTable = tx.table('products');
-      await prodTable.toCollection().modify((prod: any) => {
+      await prodTable.toCollection().modify((prod: Partial<Product>) => {
         prod.isDeleted = 0;
         prod.deletedAt = null;
       });
 
       const supTable = tx.table('suppliers');
-      await supTable.toCollection().modify((sup: any) => {
+      await supTable.toCollection().modify((sup: Partial<Supplier>) => {
         sup.isDeleted = 0;
         sup.deletedAt = null;
       });
 
       // CR-1: Generate deviceId for existing storeSettings
       const storeTable = tx.table('storeSettings');
-      await storeTable.toCollection().modify((s: any) => {
+      await storeTable.toCollection().modify((s: Partial<StoreSettings>) => {
         s.deviceId = crypto.randomUUID();
       });
 
@@ -303,10 +307,10 @@ class PosDatabase extends Dexie {
       const itemsTable = tx.table('transactionItems');
       const allTx = await txTable.toArray();
 
-      for (const t of allTx) {
-        const items = (t as any).items;
+      for (const t of allTx as LegacyTransactionWithItems[]) {
+        const items = t.items;
         if (Array.isArray(items) && items.length > 0) {
-          const records = items.map((item: any) => ({
+          const records: TransactionItemRecord[] = items.map((item) => ({
             transactionId: t.id!,
             productId: item.productId,
             productName: item.productName,
@@ -321,7 +325,7 @@ class PosDatabase extends Dexie {
           await itemsTable.bulkAdd(records);
         }
         // Remove embedded items field
-        delete (t as any).items;
+        delete t.items;
         await txTable.put(t);
       }
     });
@@ -340,7 +344,7 @@ class PosDatabase extends Dexie {
       storeSettings:    '++id',
     }).upgrade(async (tx) => {
       // Set all existing transactions to 'completed' status
-      await tx.table('transactions').toCollection().modify((t: any) => {
+      await tx.table('transactions').toCollection().modify((t: Partial<Transaction>) => {
         t.status = 'completed';
       });
     });
@@ -363,8 +367,8 @@ class PosDatabase extends Dexie {
       const allProducts = await prodTable.toArray();
       const seenSku = new Map<string, number>(); // sku -> first occurrence index
 
-      for (const p of allProducts) {
-        const sku = (p as any).sku as string | undefined;
+      for (const p of allProducts as MigratingProduct[]) {
+        const sku = p.sku;
         if (!sku || sku.trim() === '') continue;
 
         if (seenSku.has(sku)) {
@@ -375,10 +379,10 @@ class PosDatabase extends Dexie {
             counter++;
             newSku = `${sku}_dup${counter}`;
           }
-          seenSku.set(newSku, (p as any).id);
-          await prodTable.update((p as any).id!, { sku: newSku });
+          seenSku.set(newSku, p.id);
+          await prodTable.update(p.id, { sku: newSku });
         } else {
-          seenSku.set(sku, (p as any).id);
+          seenSku.set(sku, p.id);
         }
       }
     });
@@ -418,8 +422,8 @@ class PosDatabase extends Dexie {
 
       // Harvest custom units already used by existing products (e.g. 'mangkok', 'gelas')
       const allProducts = await prodTable.toArray();
-      for (const p of allProducts) {
-        const u = ((p as any).unit as string | undefined)?.trim();
+      for (const p of allProducts as Partial<Product>[]) {
+        const u = p.unit?.trim();
         if (!u) continue;
         if (seen.has(u)) continue;
         seen.add(u);

@@ -597,9 +597,9 @@ export default function Kasir() {
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Cari produk..." value={search} onChange={e => setSearch(e.target.value)} className="h-10 border-transparent bg-background/70 pl-9" />
+            <Input name="cashier-product-search" autoComplete="off" placeholder="Cari produk…" value={search} onChange={e => setSearch(e.target.value)} className="h-10 border-transparent bg-background/70 pl-9" />
           </div>
-          <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 rounded-xl bg-background/70" onClick={() => setScannerOpen(true)}>
+          <Button variant="outline" size="icon" aria-label="Buka pemindai barcode" className="h-10 w-10 shrink-0 rounded-xl bg-background/70" onClick={() => setScannerOpen(true)}>
             <ScanBarcode className="h-5 w-5" />
           </Button>
         </div>
@@ -610,7 +610,10 @@ export default function Kasir() {
             <Barcode className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               ref={scanInputRef}
-              placeholder="Scan / ketik SKU atau Barcode lalu Enter..."
+              name="cashier-barcode-input"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="Scan / ketik SKU atau Barcode lalu Enter…"
               value={scanInput}
               onChange={e => setScanInput(e.target.value)}
               onKeyDown={handleScanKeyDown}
@@ -649,7 +652,7 @@ export default function Kasir() {
                 <CardContent className="p-0">
                   <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-muted/70">
                     {p.photo ? (
-                      <img src={p.photo} alt={p.name} className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]" />
+                      <img src={p.photo} alt={p.name} width={160} height={160} loading="lazy" className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]" />
                     ) : (
                       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-background/80 text-muted-foreground/40 shadow-soft">
                         <PackageIcon className="h-7 w-7" />
@@ -713,12 +716,14 @@ export default function Kasir() {
                       <p className="text-sm font-bold text-primary">{rp(getItemSubtotal(item))}</p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={() => item.qty === 1 ? removeFromCart(item.product.id!) : updateQty(item.product.id!, -1)}>
+                      <Button variant="outline" size="icon" aria-label={item.qty === 1 ? `Hapus ${item.product.name} dari keranjang` : `Kurangi jumlah ${item.product.name}`} className="h-8 w-8 rounded-full" onClick={() => item.qty === 1 ? removeFromCart(item.product.id!) : updateQty(item.product.id!, -1)}>
                         {item.qty === 1 ? <X className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
                       </Button>
                       <input
                         key={item.qty}
                         type="number"
+                        name={`cart-qty-${item.product.id}`}
+                        aria-label={`Jumlah ${item.product.name}`}
                         inputMode="numeric"
                         defaultValue={item.qty}
                         onBlur={e => {
@@ -736,9 +741,9 @@ export default function Kasir() {
                           }
                         }}
                         onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
-                        className="w-10 h-8 text-center text-sm font-bold bg-transparent border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="h-8 w-10 rounded-md border border-input bg-transparent text-center text-sm font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       />
-                      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={() => updateQty(item.product.id!, 1)}>
+                      <Button variant="outline" size="icon" aria-label={`Tambah jumlah ${item.product.name}`} className="h-8 w-8 rounded-full" onClick={() => updateQty(item.product.id!, 1)}>
                         <Plus className="w-3 h-3" />
                       </Button>
                     </div>
@@ -926,12 +931,14 @@ export default function Kasir() {
                       <p className="text-sm font-bold text-primary">{rp(getItemSubtotal(item))}</p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={() => item.qty === 1 ? removeFromCart(item.product.id!) : updateQty(item.product.id!, -1)}>
+                      <Button variant="outline" size="icon" aria-label={item.qty === 1 ? `Hapus ${item.product.name} dari keranjang` : `Kurangi jumlah ${item.product.name}`} className="h-8 w-8 rounded-full" onClick={() => item.qty === 1 ? removeFromCart(item.product.id!) : updateQty(item.product.id!, -1)}>
                         {item.qty === 1 ? <X className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
                       </Button>
                       <input
                         key={item.qty}
                         type="number"
+                        name={`cart-qty-${item.product.id}`}
+                        aria-label={`Jumlah ${item.product.name}`}
                         inputMode="numeric"
                         defaultValue={item.qty}
                         onBlur={e => {
@@ -949,9 +956,9 @@ export default function Kasir() {
                           }
                         }}
                         onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
-                        className="w-10 h-8 text-center text-sm font-bold bg-transparent border border-input rounded-md focus:outline-none focus:ring-1 focus:ring-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="h-8 w-10 rounded-md border border-input bg-transparent text-center text-sm font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       />
-                      <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={() => updateQty(item.product.id!, 1)}>
+                      <Button variant="outline" size="icon" aria-label={`Tambah jumlah ${item.product.name}`} className="h-8 w-8 rounded-full" onClick={() => updateQty(item.product.id!, 1)}>
                         <Plus className="w-3 h-3" />
                       </Button>
                     </div>
@@ -1192,7 +1199,7 @@ export default function Kasir() {
                 inputMode="numeric"
                 value={paymentAmount === '0' ? '' : paymentAmount}
                 onChange={e => { setPaymentAmount(e.target.value || '0'); setIsQuickAdding(true); }}
-                placeholder="Masukkan jumlah bayar..."
+                placeholder="Masukkan jumlah bayar…"
                 className="h-12 text-lg font-bold text-center"
               />
               <div className="flex flex-wrap gap-1.5">
@@ -1207,14 +1214,14 @@ export default function Kasir() {
                         setPaymentAmount(prev => String((Number(prev) || 0) + nom));
                       }
                     }}
-                    className="flex-1 min-w-[calc(25%-6px)] h-9 rounded-lg border border-border bg-muted/50 text-xs font-semibold text-foreground hover:bg-primary/10 hover:border-primary hover:text-primary active:scale-95 transition-all"
+                    className="h-9 min-w-[calc(25%-6px)] flex-1 rounded-lg border border-border bg-muted/50 text-xs font-semibold text-foreground transition-[background-color,color,border-color,transform] duration-150 ease-out hover:border-primary hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
                   >
                     {nom >= 1000 ? `${(nom / 1000)}K` : nom}
                   </button>
                 ))}
                 <button
                   onClick={() => { setPaymentAmount(total.toString()); setIsQuickAdding(false); }}
-                  className="flex-1 min-w-[calc(25%-6px)] h-9 rounded-lg border border-primary/30 bg-primary/5 text-xs font-semibold text-primary hover:bg-primary/10 active:scale-95 transition-all"
+                  className="h-9 min-w-[calc(25%-6px)] flex-1 rounded-lg border border-primary/30 bg-primary/5 text-xs font-semibold text-primary transition-[background-color,transform] duration-150 ease-out hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
                 >
                   Uang Pas
                 </button>

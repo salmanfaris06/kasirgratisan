@@ -181,7 +181,9 @@ export default function Produk() {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Cari nama, SKU, atau deskripsi..."
+              name="product-search"
+              autoComplete="off"
+              placeholder="Cari nama, SKU, atau deskripsi…"
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="h-10 border-transparent bg-background/70 pl-9"
@@ -224,7 +226,7 @@ export default function Produk() {
                   {/* Product thumbnail */}
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-muted/70 shadow-soft">
                     {p.photo ? (
-                      <img src={p.photo} alt={p.name} className="h-full w-full object-cover" />
+                      <img src={p.photo} alt={p.name} width={56} height={56} loading="lazy" className="h-full w-full object-cover" />
                     ) : (
                       <PackageIcon className="h-5 w-5 text-muted-foreground/40" />
                     )}
@@ -262,10 +264,10 @@ export default function Produk() {
                   <div className="flex flex-col gap-1">
                     {canManage ? (
                       <>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>
+                        <Button variant="ghost" size="icon" aria-label={`Edit ${p.name}`} className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary" onClick={() => openEdit(p)}>
                           <Edit2 className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(p.id!)}>
+                        <Button variant="ghost" size="icon" aria-label={`Hapus ${p.name}`} className="h-8 w-8 rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={() => setDeleteId(p.id!)}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </>
@@ -295,7 +297,7 @@ export default function Produk() {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {photo ? (
-                    <img src={photo} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={photo} alt="Preview foto produk" width={80} height={80} className="w-full h-full object-cover" />
                   ) : (
                     <Camera className="w-6 h-6 text-muted-foreground/50" />
                   )}
@@ -336,12 +338,12 @@ export default function Produk() {
 
             <div className="space-y-1.5">
               <Label>Nama Produk *</Label>
-              <Input value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: Nasi Goreng" className="h-11" />
+              <Input name="product-name" autoComplete="off" value={name} onChange={e => setName(e.target.value)} placeholder="Contoh: Nasi Goreng" className="h-11" />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>SKU *</Label>
-                <Input value={sku} onChange={e => setSku(e.target.value)} placeholder="Wajib diisi, contoh: NG001" className="h-11" />
+                <Input name="product-sku" autoComplete="off" spellCheck={false} value={sku} onChange={e => setSku(e.target.value)} placeholder="Wajib diisi, contoh: NG001" className="h-11" />
               </div>
               <div className="space-y-1.5">
                 <Label>Kategori *</Label>
@@ -360,11 +362,11 @@ export default function Produk() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Harga Jual *</Label>
-                <Input type="number" value={price} onChange={e => setPrice(e.target.value)} placeholder="15000" className="h-11" />
+                <Input name="product-price" autoComplete="off" type="number" inputMode="numeric" value={price} onChange={e => setPrice(e.target.value)} placeholder="15000" className="h-11" />
               </div>
               <div className="space-y-1.5">
                 <Label>HPP</Label>
-                <Input type="number" value={hpp} onChange={e => setHpp(e.target.value)} placeholder="10000" className="h-11" />
+                <Input name="product-hpp" autoComplete="off" type="number" inputMode="numeric" value={hpp} onChange={e => setHpp(e.target.value)} placeholder="10000" className="h-11" />
               </div>
             </div>
             <div className="flex items-center justify-between rounded-2xl border border-border/70 bg-muted/20 p-3">
@@ -382,7 +384,7 @@ export default function Produk() {
               {trackStock && (
                 <div className="space-y-1.5">
                   <Label>Stok Awal</Label>
-                  <Input type="number" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" className="h-11" />
+                  <Input name="product-stock" autoComplete="off" type="number" inputMode="numeric" value={stock} onChange={e => setStock(e.target.value)} placeholder="0" className="h-11" />
                 </div>
               )}
               <div className={cn('space-y-1.5', !trackStock && 'col-span-2')}>
@@ -404,13 +406,14 @@ export default function Produk() {
             <div className="space-y-1.5">
               <Label>Barcode</Label>
               <div className="flex gap-2">
-                <Input value={barcode} onChange={e => setBarcode(e.target.value)} placeholder="Opsional" className="h-11 flex-1" />
+                <Input name="product-barcode" autoComplete="off" spellCheck={false} value={barcode} onChange={e => setBarcode(e.target.value)} placeholder="Opsional" className="h-11 flex-1" />
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
                   className="h-11 w-11 shrink-0"
                   title="Salin dari SKU"
+                  aria-label="Salin SKU ke barcode"
                   onClick={() => setBarcode(sku.trim())}
                 >
                   <Copy className="w-4 h-4" />

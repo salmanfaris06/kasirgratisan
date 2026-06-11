@@ -313,7 +313,7 @@ export default function BarcodeScanner({ open, onClose, onScan }: BarcodeScanner
               <div id={scannerId} className="w-full aspect-[4/3] bg-black rounded-lg" />
               {permission === 'checking' && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-lg">
-                  <p className="text-white text-sm">Meminta izin kamera...</p>
+                  <p className="text-white text-sm">Meminta izin kamera…</p>
                 </div>
               )}
             </>
@@ -324,6 +324,7 @@ export default function BarcodeScanner({ open, onClose, onScan }: BarcodeScanner
               <Button
                 variant="secondary"
                 size="icon"
+                aria-label={flashOn ? 'Matikan lampu kamera' : 'Nyalakan lampu kamera'}
                 className="h-10 w-10 rounded-full shadow-floating"
                 onClick={toggleFlash}
               >

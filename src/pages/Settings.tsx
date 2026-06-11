@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type PaymentMethod, type Category, type Unit, type ExpenseCategory, type Product } from '@/lib/db';
+import { db, type PaymentMethod, type Category, type Unit, type ExpenseCategory, type Product, type Supplier, type Customer, type StockIn, type StockOut, type HppHistory, type Transaction, type TransactionItemRecord, type StoreSettings, type User, type Expense } from '@/lib/db';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Settings, Store, CreditCard, Tag, Download, Upload, Plus, Trash2, Edit2, Info, Truck, ArrowDownToLine, ArrowUpFromLine, ChevronRight, Receipt, Palette, HardDrive, Package, Camera, X, Ruler, Users as UsersIcon, ShieldCheck, LogOut, Smartphone, CheckCircle2, Globe, Share2, Wallet, Sparkles, LineChart, Sun, Moon, Monitor } from 'lucide-react';
 import WhatsNewModal from '@/components/WhatsNewModal';
@@ -26,6 +26,27 @@ import { isNativePlatform, getDefaultBluetoothPrinter, setDefaultBluetoothPrinte
 import { Printer } from 'lucide-react';
 import { APP_VERSION } from '@/lib/app-version';
 import { useTheme } from 'next-themes';
+
+type BackupTransactionItem = Omit<TransactionItemRecord, 'id' | 'transactionId'>;
+type BackupTransaction = Transaction & { items?: BackupTransactionItem[] };
+type BackupData = {
+  version?: number;
+  categories?: Category[];
+  products?: Product[];
+  suppliers?: Supplier[];
+  customers?: Customer[];
+  stockIns?: StockIn[];
+  stockOuts?: StockOut[];
+  hppHistory?: HppHistory[];
+  paymentMethods?: PaymentMethod[];
+  transactions?: BackupTransaction[];
+  transactionItems?: TransactionItemRecord[];
+  storeSettings?: StoreSettings[];
+  users?: User[];
+  units?: Unit[];
+  expenseCategories?: ExpenseCategory[];
+  expenses?: Expense[];
+};
 
 export default function Pengaturan() {
   const isNative = isNativePlatform();
@@ -390,11 +411,12 @@ export default function Pengaturan() {
       try {
         const text = await file.text();
         if (!text.trim()) { toast.error('File kosong'); return; }
-        const data = JSON.parse(text);
+        const data = JSON.parse(text) as BackupData;
         if (!data.version) { toast.error('File tidak valid'); return; }
 
         // Validate at least 1 table has data
-        const hasSomeData = ['categories', 'products', 'suppliers', 'transactions', 'paymentMethods'].some(
+        const requiredBackupKeys = ['categories', 'products', 'suppliers', 'transactions', 'paymentMethods'] as const;
+        const hasSomeData = requiredBackupKeys.some(
           key => Array.isArray(data[key]) && data[key].length > 0
         );
         if (!hasSomeData) { toast.error('File backup tidak berisi data'); return; }
@@ -471,7 +493,7 @@ export default function Pengaturan() {
             const now = new Date();
             const defaults = ['pcs', 'kg', 'gram', 'liter', 'ml', 'porsi', 'cup', 'botol', 'bungkus'];
             const seen = new Set<string>();
-            const toAdd: any[] = [];
+            const toAdd: Unit[] = [];
 
             for (const name of defaults) {
               seen.add(name);
@@ -496,8 +518,8 @@ export default function Pengaturan() {
             // v1 format: migrate embedded items[] to transactionItems
             for (const t of data.transactions) {
               if (Array.isArray(t.items) && t.items.length > 0) {
-                const records = t.items.map((item: any) => ({
-                  transactionId: t.id,
+                const records: TransactionItemRecord[] = t.items.map((item) => ({
+                  transactionId: t.id!,
                   productId: item.productId,
                   productName: item.productName,
                   quantity: item.quantity,
@@ -564,30 +586,34 @@ export default function Pengaturan() {
   };
 
   return (
-    <div className="px-4 pt-6 pb-4 space-y-5">
-      <h1 className="text-xl font-bold flex items-center gap-2">
-        <Settings className="w-5 h-5 text-primary" />
-        Pengaturan
-      </h1>
+    <div className="space-y-6 px-4 pb-4 pt-6">
+      <div className="space-y-1">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Preferensi Toko</p>
+        <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+          <Settings className="h-5 w-5 text-primary" />
+          Pengaturan
+        </h1>
+      </div>
 
       {/* Store Info */}
       <Card
-        className={`border-border/70 shadow-soft ${can('manage_store_settings') ? 'cursor-pointer' : 'cursor-default opacity-90'}`}
+        className={`overflow-hidden border-primary/20 bg-primary text-primary-foreground shadow-glow ${can('manage_store_settings') ? 'cursor-pointer' : 'cursor-default opacity-90'}`}
         onClick={() => can('manage_store_settings') && openStoreEdit()}
       >
-        <CardContent className="p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center overflow-hidden shrink-0">
+        <CardContent className="relative flex items-center gap-4 p-5">
+          <div className="absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/15 blur-2xl" />
+          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/15 text-primary-foreground shadow-soft backdrop-blur-sm">
             {storeSettings?.logo ? (
-              <img src={storeSettings.logo} alt="Logo" className="w-full h-full object-cover" />
+              <img src={storeSettings.logo} alt="Logo toko" width={64} height={64} className="h-full w-full object-cover" />
             ) : (
-              <Store className="w-5 h-5" />
+              <Store className="h-6 w-6" />
             )}
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold">{storeSettings?.storeName || 'Toko Saya'}</p>
-            <p className="text-xs text-muted-foreground">{storeSettings?.address || 'Belum diatur'}</p>
+          <div className="relative min-w-0 flex-1">
+            <p className="truncate text-lg font-extrabold tracking-tight">{storeSettings?.storeName || 'Toko Saya'}</p>
+            <p className="mt-0.5 truncate text-xs text-primary-foreground/75">{storeSettings?.address || 'Alamat toko belum diatur'}</p>
           </div>
-          {can('manage_store_settings') && <Edit2 className="w-4 h-4 text-muted-foreground" />}
+          {can('manage_store_settings') && <Edit2 className="relative h-4 w-4 text-primary-foreground/75" />}
         </CardContent>
       </Card>
 
@@ -653,8 +679,8 @@ export default function Pengaturan() {
 
       {/* Karyawan & Akses links/activation */}
       {isOwner && (
-        <div className="space-y-2">
-          <h2 className="text-sm font-semibold text-muted-foreground">Karyawan & Akses</h2>
+        <section className="space-y-2.5">
+          <h2 className="text-sm font-bold tracking-tight">Karyawan & Akses</h2>
           {!multiUserEnabled ? (
             <Card className="border-border/70 shadow-soft">
               <CardContent className="p-3 flex items-center gap-3">
@@ -702,12 +728,12 @@ export default function Pengaturan() {
               </Card>
             </>
           )}
-        </div>
+        </section>
       )}
 
       {/* Transaksi & Stok */}
-      <div className="space-y-2">
-        <h2 className="text-sm font-semibold text-muted-foreground">Transaksi & Stok</h2>
+      <section className="space-y-2.5">
+        <h2 className="text-sm font-bold tracking-tight">Transaksi & Stok</h2>
         <Link to="/history">
           <Card className="border-border/70 shadow-soft cursor-pointer hover:shadow-card transition-shadow mb-2">
             <CardContent className="p-3 flex items-center gap-3">
@@ -783,7 +809,7 @@ export default function Pengaturan() {
             </Card>
           </Link>
         )}
-      </div>
+      </section>
 
       {/* Payment Methods */}
       {can('manage_categories_payments') && (
@@ -802,8 +828,8 @@ export default function Pengaturan() {
                 <p className="text-[10px] text-muted-foreground capitalize">{pm.category}</p>
               </div>
               <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openPmEdit(pm)}><Edit2 className="w-3 h-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deletePm(pm.id!)}><Trash2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Edit metode pembayaran ${pm.name}`} className="h-7 w-7" onClick={() => openPmEdit(pm)}><Edit2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Hapus metode pembayaran ${pm.name}`} className="h-7 w-7 text-destructive" onClick={() => deletePm(pm.id!)}><Trash2 className="w-3 h-3" /></Button>
               </div>
             </div>
           ))}
@@ -828,8 +854,8 @@ export default function Pengaturan() {
                 <span className="text-sm font-medium">{c.name}</span>
               </div>
               <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openCatEdit(c)}><Edit2 className="w-3 h-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteCat(c.id!)}><Trash2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Edit kategori produk ${c.name}`} className="h-7 w-7" onClick={() => openCatEdit(c)}><Edit2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Hapus kategori produk ${c.name}`} className="h-7 w-7 text-destructive" onClick={() => deleteCat(c.id!)}><Trash2 className="w-3 h-3" /></Button>
               </div>
             </div>
           ))}
@@ -857,8 +883,8 @@ export default function Pengaturan() {
                 <span className="text-sm font-medium">{c.name}</span>
               </div>
               <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openExpCatEdit(c)}><Edit2 className="w-3 h-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => deleteExpCat(c)}><Trash2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Edit kategori pengeluaran ${c.name}`} className="h-7 w-7" onClick={() => openExpCatEdit(c)}><Edit2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Hapus kategori pengeluaran ${c.name}`} className="h-7 w-7 text-destructive" onClick={() => deleteExpCat(c)}><Trash2 className="w-3 h-3" /></Button>
               </div>
             </div>
           ))}
@@ -882,8 +908,8 @@ export default function Pengaturan() {
             <div key={u.id} className="flex items-center justify-between py-1.5">
               <span className="text-sm font-medium">{u.name}</span>
               <div className="flex gap-1">
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openUnitEdit(u)}><Edit2 className="w-3 h-3" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => requestDeleteUnit(u)}><Trash2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Edit satuan ${u.name}`} className="h-7 w-7" onClick={() => openUnitEdit(u)}><Edit2 className="w-3 h-3" /></Button>
+                <Button variant="ghost" size="icon" aria-label={`Hapus satuan ${u.name}`} className="h-7 w-7 text-destructive" onClick={() => requestDeleteUnit(u)}><Trash2 className="w-3 h-3" /></Button>
               </div>
             </div>
           ))}
@@ -905,7 +931,7 @@ export default function Pengaturan() {
                   <p className="text-sm font-medium truncate">{defaultPrinter.name}</p>
                   <p className="text-[10px] text-muted-foreground truncate">{defaultPrinter.address}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive shrink-0" onClick={clearDefaultPrinter}>
+                <Button variant="ghost" size="icon" aria-label="Hapus printer default" className="h-7 w-7 text-destructive shrink-0" onClick={clearDefaultPrinter}>
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -915,7 +941,7 @@ export default function Pengaturan() {
           </div>
 
           <Button variant="outline" className="w-full h-10 text-sm gap-2" onClick={refreshPairedPrinters} disabled={loadingPrinters}>
-            <Printer className="w-4 h-4" /> {loadingPrinters ? 'Mencari...' : 'Cari Printer Terpasang'}
+            <Printer className="w-4 h-4" /> {loadingPrinters ? 'Mencari…' : 'Cari Printer Terpasang'}
           </Button>
 
           {pairedPrinters.length > 0 && (
@@ -928,7 +954,7 @@ export default function Pengaturan() {
                     key={printer.address}
                     type="button"
                     onClick={() => selectDefaultPrinter(printer)}
-                    className={`flex items-center justify-between w-full text-left rounded-lg border px-3 py-2 transition-colors ${isSelected ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}
+                    className={`flex items-center justify-between w-full rounded-lg border px-3 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${isSelected ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'}`}
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{printer.name || 'Tanpa Nama'}</p>
@@ -1031,9 +1057,12 @@ export default function Pengaturan() {
       </Card>
 
       {/* About */}
-      <Card className="border-border/70 shadow-soft">
-        <CardContent className="p-4 text-center space-y-2">
-           <p className="text-sm font-bold">KasirGratisan</p>
+      <Card className="border-border/70 bg-card/80 shadow-soft">
+        <CardContent className="space-y-2 p-5 text-center">
+           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-soft">
+             <Store className="h-5 w-5" />
+           </div>
+           <p className="text-base font-extrabold tracking-tight">KasirGratisan</p>
            <p className="text-xs text-muted-foreground">POS Gratis untuk UMKM Indonesia 🇮🇩</p>
            <p className="text-[10px] text-muted-foreground">v{APP_VERSION} • Data tersimpan di perangkat</p>
 
@@ -1088,7 +1117,7 @@ export default function Pengaturan() {
                </p>
                <div className="w-full h-1.5 bg-muted rounded-full mt-1.5 overflow-hidden">
                  <div
-                   className="h-full bg-primary rounded-full transition-all"
+                   className="h-full rounded-full bg-primary transition-[width] duration-300 ease-out"
                    style={{ width: `${Math.min(100, (storageUsage.usage / storageUsage.quota) * 100)}%` }}
                  />
                </div>
@@ -1180,7 +1209,7 @@ export default function Pengaturan() {
                   onClick={() => logoInputRef.current?.click()}
                 >
                   {storeLogo ? (
-                    <img src={storeLogo} alt="Logo" className="w-full h-full object-cover" />
+                    <img src={storeLogo} alt="Preview logo toko" width={80} height={80} className="h-full w-full object-cover" />
                   ) : (
                     <Camera className="w-6 h-6 text-muted-foreground/50" />
                   )}

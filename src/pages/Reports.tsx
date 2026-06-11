@@ -134,14 +134,17 @@ export default function Laporan() {
   const rp = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
 
   return (
-    <div className="px-4 pt-6 pb-20 space-y-5">
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-primary" />
-          Laporan
-        </h1>
-        <Button size="sm" variant="outline" className="h-9 gap-1.5" onClick={() => setExportOpen(true)}>
-          <Download className="w-4 h-4" /> Export
+    <div className="space-y-6 px-4 pb-20 pt-6">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Analitik Usaha</p>
+          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            Laporan
+          </h1>
+        </div>
+        <Button size="sm" variant="outline" className="h-10 gap-1.5 rounded-full bg-card/80 px-4 shadow-soft" onClick={() => setExportOpen(true)}>
+          <Download className="h-4 w-4" /> Export
         </Button>
       </div>
 
@@ -152,13 +155,17 @@ export default function Laporan() {
         defaultEndMs={dateRange.end.getTime()}
       />
 
-      <Tabs value={period} onValueChange={v => setPeriod(v as 'daily' | '7' | '30')}>
-        <TabsList className="w-full">
-          <TabsTrigger value="daily" className="flex-1">Harian</TabsTrigger>
-          <TabsTrigger value="7" className="flex-1">7 Hari</TabsTrigger>
-          <TabsTrigger value="30" className="flex-1">30 Hari</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <Card className="border-border/70 bg-card/80 shadow-soft backdrop-blur-sm">
+        <CardContent className="p-2.5">
+          <Tabs value={period} onValueChange={v => setPeriod(v as 'daily' | '7' | '30')}>
+            <TabsList className="w-full rounded-xl bg-muted/70">
+              <TabsTrigger value="daily" className="flex-1 rounded-lg">Harian</TabsTrigger>
+              <TabsTrigger value="7" className="flex-1 rounded-lg">7 Hari</TabsTrigger>
+              <TabsTrigger value="30" className="flex-1 rounded-lg">30 Hari</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </CardContent>
+      </Card>
 
       {period === 'daily' && (
         <Card className="border-border/70 shadow-soft">
@@ -183,25 +190,31 @@ export default function Laporan() {
         </Card>
       )}
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2.5">
         <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
-            <ShoppingCart className="w-4 h-4 mx-auto text-primary mb-1" />
-            <p className="text-lg font-bold">{txCount}</p>
+            <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <ShoppingCart className="h-4 w-4" />
+            </div>
+            <p className="text-lg font-extrabold tracking-tight">{txCount}</p>
             <p className="text-[10px] text-muted-foreground">Transaksi</p>
           </CardContent>
         </Card>
         <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
-            <TrendingUp className="w-4 h-4 mx-auto text-success mb-1" />
-            <p className="text-sm font-bold">{rp(totalSales)}</p>
+            <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-success/10 text-success">
+              <TrendingUp className="h-4 w-4" />
+            </div>
+            <p className="text-sm font-extrabold tracking-tight">{rp(totalSales)}</p>
             <p className="text-[10px] text-muted-foreground">Penjualan</p>
           </CardContent>
         </Card>
         <Card className="border-border/70 shadow-soft">
           <CardContent className="p-3 text-center">
-            <TrendingUp className="w-4 h-4 mx-auto text-accent mb-1" />
-            <p className="text-sm font-bold">{rp(totalProfit)}</p>
+            <div className="mx-auto mb-2 flex h-9 w-9 items-center justify-center rounded-xl bg-accent/10 text-accent">
+              <TrendingUp className="h-4 w-4" />
+            </div>
+            <p className="text-sm font-extrabold tracking-tight">{rp(totalProfit)}</p>
             <p className="text-[10px] text-muted-foreground">Profit</p>
           </CardContent>
         </Card>
@@ -243,14 +256,14 @@ export default function Laporan() {
         </Card>
       )}
 
-      <Card className="border-border/70 shadow-soft">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-1.5">
-            <DollarSign className="w-4 h-4" />
+      <Card className="overflow-hidden border-border/70 shadow-soft">
+        <CardHeader className="border-b border-border/70 bg-muted/20 pb-3">
+          <CardTitle className="flex items-center gap-1.5 text-sm">
+            <DollarSign className="h-4 w-4 text-primary" />
             Laba Rugi{period === 'daily' ? ' Harian' : ''}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-2 p-4">
           <div className="flex justify-between items-center text-sm">
             <div className="flex items-center gap-2">
               <ArrowUp className="w-3.5 h-3.5 text-success" />
@@ -342,11 +355,11 @@ export default function Laporan() {
       )}
 
       {period !== 'daily' && (
-        <Card className="border-border/70 shadow-soft">
-          <CardHeader className="pb-2">
+        <Card className="overflow-hidden border-border/70 shadow-soft">
+          <CardHeader className="border-b border-border/70 bg-muted/20 pb-3">
             <CardTitle className="text-sm">Tren Penjualan</CardTitle>
           </CardHeader>
-          <CardContent className="pb-4">
+          <CardContent className="pb-4 pt-4">
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={chartData}>
                 <XAxis dataKey="date" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
@@ -359,10 +372,10 @@ export default function Laporan() {
         </Card>
       )}
 
-      <Card className="border-border/70 shadow-soft">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-1.5">
-            <Package className="w-4 h-4" />
+      <Card className="overflow-hidden border-border/70 shadow-soft">
+        <CardHeader className="border-b border-border/70 bg-muted/20 pb-3">
+          <CardTitle className="flex items-center gap-1.5 text-sm">
+            <Package className="h-4 w-4 text-primary" />
             Produk Terlaris{period === 'daily' ? ' Harian' : ''}
           </CardTitle>
         </CardHeader>
