@@ -559,15 +559,14 @@ export default function Kasir() {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] px-4 pb-4 pt-6">
+    <div className="h-[calc(100vh-5rem)] px-4 pb-4 pt-6">
       <div className="flex h-full flex-col gap-0 md:flex-row md:gap-4">
         <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Transaksi</p>
-          <h1 className="mt-1 flex items-center gap-2 text-2xl font-extrabold tracking-tight">
-            <ShoppingCart className="h-5 w-5 text-primary" />
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="min-w-0 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/75">Transaksi</p>
+          <h1 className="flex flex-wrap items-center gap-2 break-words pb-1 text-4xl font-extrabold leading-[1.15] tracking-tight md:text-5xl md:leading-[1.15]">
             Kasir
             {editingTxId && (
               <Badge variant="secondary" className="text-[10px] font-normal">
@@ -579,7 +578,7 @@ export default function Kasir() {
         <Button
           variant="outline"
           size="sm"
-          className="relative h-9 gap-1.5 rounded-full bg-card/80 px-3 text-xs shadow-soft"
+          className="relative h-10 shrink-0 gap-1.5 rounded-full bg-card/80 px-3 text-xs shadow-soft"
           onClick={() => setOpenBillsOpen(true)}
         >
           <ClipboardList className="h-4 w-4" />
@@ -592,7 +591,7 @@ export default function Kasir() {
         </Button>
       </div>
 
-      <div className="mb-3 rounded-2xl border border-border/70 bg-card/80 p-2.5 shadow-soft backdrop-blur-sm">
+      <div className="mb-3 rounded-3xl border border-border/70 bg-card/80 p-2.5 shadow-soft backdrop-blur-sm">
         {/* Search */}
         <div className="flex gap-2">
           <div className="relative flex-1">
@@ -625,11 +624,11 @@ export default function Kasir() {
 
       {/* Category chips */}
       <div className="mb-3 flex gap-2 overflow-x-auto pb-1 pr-4 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}>
-        <button onClick={() => setFilterCategory('all')} className={cn('shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-[background-color,color,border-color,box-shadow] duration-150 ease-out', filterCategory === 'all' ? 'border-primary bg-primary text-primary-foreground shadow-glow' : 'border-border/70 bg-card/80 text-muted-foreground hover:text-foreground')}>
+        <button onClick={() => setFilterCategory('all')} className={cn('shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-[background-color,color,border-color,box-shadow] duration-150 ease-out', filterCategory === 'all' ? 'border-primary bg-primary text-primary-foreground' : 'border-border/70 bg-card/80 text-muted-foreground hover:text-foreground')}>
           Semua
         </button>
         {categories?.map(c => (
-          <button key={c.id} onClick={() => setFilterCategory(c.id!.toString())} className={cn('shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-[background-color,color,border-color,box-shadow] duration-150 ease-out', filterCategory === c.id!.toString() ? 'border-primary bg-primary text-primary-foreground shadow-glow' : 'border-border/70 bg-card/80 text-muted-foreground hover:text-foreground')}>
+          <button key={c.id} onClick={() => setFilterCategory(c.id!.toString())} className={cn('shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-[background-color,color,border-color,box-shadow] duration-150 ease-out', filterCategory === c.id!.toString() ? 'border-primary bg-primary text-primary-foreground' : 'border-border/70 bg-card/80 text-muted-foreground hover:text-foreground')}>
             {c.icon} {c.name}
           </button>
         ))}
@@ -638,8 +637,11 @@ export default function Kasir() {
       {/* Product Grid */}
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {filtered.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-sm text-muted-foreground">
+          <div className="rounded-3xl border border-dashed border-border/80 bg-card/60 px-6 py-12 text-center shadow-soft">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <PackageIcon className="h-7 w-7" />
+            </div>
+            <p className="text-sm font-semibold text-muted-foreground">
               {products && products.length > 0
                 ? 'Semua produk stoknya habis. Tambah stok dulu di menu Stok Masuk.'
                 : 'Belum ada produk. Tambah produk dulu di menu Produk.'}
@@ -648,9 +650,9 @@ export default function Kasir() {
         ) : (
           <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3 lg:grid-cols-4">
             {filtered.map(p => (
-              <Card key={p.id} className="group cursor-pointer overflow-hidden border-border/70 shadow-soft transition-[box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-card active:translate-y-0 active:scale-[0.98]" onClick={() => addToCart(p)}>
+              <Card key={p.id} className="group cursor-pointer overflow-hidden rounded-3xl border-border/70 bg-card/80 shadow-soft backdrop-blur-sm transition-[box-shadow,transform] duration-150 ease-out hover:-translate-y-0.5 hover:shadow-card active:translate-y-0 active:scale-[0.98]" onClick={() => addToCart(p)}>
                 <CardContent className="p-0">
-                  <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-muted/70">
+                  <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-muted/60">
                     {p.photo ? (
                       <img src={p.photo} alt={p.name} width={160} height={160} loading="lazy" className="h-full w-full object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]" />
                     ) : (
@@ -687,7 +689,7 @@ export default function Kasir() {
       </div>
 
       {/* Desktop Cart Panel */}
-      <div className="hidden shrink-0 flex-col overflow-hidden rounded-2xl border border-border/70 bg-card/90 shadow-soft backdrop-blur-sm md:flex md:w-80 lg:w-96">
+      <div className="hidden shrink-0 flex-col overflow-hidden rounded-3xl border border-border/70 bg-card/90 shadow-soft backdrop-blur-sm md:flex md:w-80 lg:w-96">
         <div className="p-4 border-b border-border shrink-0">
           <h3 className="text-base font-bold flex items-center gap-2">
             <ShoppingCart className="w-4 h-4 text-primary" />
