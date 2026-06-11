@@ -178,6 +178,7 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
           await db.expenses.clear();
         }
         if (Array.isArray(data.customers)) await db.customers.clear();
+        if (Array.isArray(data.cashierShifts)) await db.cashierShifts.clear();
 
         if (data.categories?.length) await db.categories.bulkAdd(data.categories);
         if (data.products?.length) {
@@ -218,6 +219,9 @@ export default function Onboarding({ onComplete }: OnboardingProps) {
         }
 
         if (data.transactionItems?.length) await db.transactionItems.bulkAdd(data.transactionItems);
+
+        // Shift history is restored after transactions/items so shiftId references are preserved.
+        if (data.cashierShifts?.length) await db.cashierShifts.bulkAdd(data.cashierShifts);
 
         // Restored storeSettings carries onboardingDone from the source device.
         // Force it true so the wizard closes and the app opens straight away.

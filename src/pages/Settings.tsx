@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type PaymentMethod, type Category, type Unit, type ExpenseCategory, type Product, type Supplier, type Customer, type StockIn, type StockOut, type HppHistory, type Transaction, type TransactionItemRecord, type StoreSettings, type User, type Expense } from '@/lib/db';
+import { db, type PaymentMethod, type Category, type Unit, type ExpenseCategory, type Product, type Supplier, type Customer, type StockIn, type StockOut, type HppHistory, type Transaction, type TransactionItemRecord, type StoreSettings, type User, type Expense, type CashierShift } from '@/lib/db';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Settings, Store, CreditCard, Tag, Download, Upload, Plus, Trash2, Edit2, Info, Truck, ArrowDownToLine, ArrowUpFromLine, ChevronRight, Receipt, Palette, HardDrive, Package, Camera, X, Ruler, Users as UsersIcon, ShieldCheck, LogOut, Smartphone, CheckCircle2, Globe, Share2, Wallet, Sparkles, LineChart, Sun, Moon, Monitor, CalendarClock } from 'lucide-react';
 import WhatsNewModal from '@/components/WhatsNewModal';
@@ -46,6 +46,7 @@ type BackupData = {
   units?: Unit[];
   expenseCategories?: ExpenseCategory[];
   expenses?: Expense[];
+  cashierShifts?: CashierShift[];
 };
 
 export default function Pengaturan() {
@@ -438,6 +439,7 @@ export default function Pengaturan() {
           units: await db.units.toArray(),
           expenseCategories: await db.expenseCategories.toArray(),
           expenses: await db.expenses.toArray(),
+          cashierShifts: await db.cashierShifts.toArray(),
         };
 
         try {
@@ -464,6 +466,11 @@ export default function Pengaturan() {
           // doesn't lose locally-managed customers when restoring an older file.
           if (Array.isArray(data.customers)) {
             await db.customers.clear();
+          }
+          // Only clear shifts if backup file has them (v6+ backup format).
+          // Older backups remain compatible and keep existing local shift history.
+          if (Array.isArray(data.cashierShifts)) {
+            await db.cashierShifts.clear();
           }
 
           // BulkAdd from file
@@ -535,6 +542,9 @@ export default function Pengaturan() {
             }
           }
 
+          // Shift history is restored after transactions/items so shiftId references are preserved.
+          if (data.cashierShifts?.length) await db.cashierShifts.bulkAdd(data.cashierShifts);
+
           toast.success('Data berhasil di-restore!');
         } catch (importErr) {
           // CR-7: Rollback — restore from snapshot
@@ -548,6 +558,7 @@ export default function Pengaturan() {
             await db.expenseCategories.clear();
             await db.expenses.clear();
             await db.customers.clear();
+            await db.cashierShifts.clear();
 
             if (snapshot.categories.length) await db.categories.bulkAdd(snapshot.categories);
             if (snapshot.products.length) await db.products.bulkAdd(snapshot.products);
@@ -564,6 +575,7 @@ export default function Pengaturan() {
             if (snapshot.units.length) await db.units.bulkAdd(snapshot.units);
             if (snapshot.expenseCategories.length) await db.expenseCategories.bulkAdd(snapshot.expenseCategories);
             if (snapshot.expenses.length) await db.expenses.bulkAdd(snapshot.expenses);
+            if (snapshot.cashierShifts.length) await db.cashierShifts.bulkAdd(snapshot.cashierShifts);
 
             toast.error('Import gagal, data dikembalikan');
           } catch {

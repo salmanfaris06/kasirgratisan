@@ -66,7 +66,7 @@ export function shouldShowBackupReminder(lastBackupAt: Date | string | null): bo
 // Export all data as JSON and trigger download
 export async function exportBackupData() {
   const data = {
-    version: 5,
+    version: 6,
     exportedAt: new Date().toISOString(),
     categories: await db.categories.toArray(),
     products: await db.products.toArray(),
@@ -83,6 +83,7 @@ export async function exportBackupData() {
     units: await db.units.toArray(),
     expenseCategories: await db.expenseCategories.toArray(),
     expenses: await db.expenses.toArray(),
+    cashierShifts: await db.cashierShifts.toArray(),
   };
 
   const fileName = `kasirgratisan-backup-${new Date().toISOString().slice(0, 10)}.json`;
