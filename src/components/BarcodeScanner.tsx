@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import type { Html5Qrcode } from 'html5-qrcode';
 import { X, Camera, CameraOff, Flashlight, AlertCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -147,6 +147,9 @@ export default function BarcodeScanner({ open, onClose, onScan }: BarcodeScanner
       // 4. Start html5-qrcode now that permission is confirmed.
       setPermission('granted');
       try {
+        const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import('html5-qrcode');
+        if (cancelled) return;
+
         const scanner = new Html5Qrcode(scannerId, {
           formatsToSupport: [
             Html5QrcodeSupportedFormats.EAN_13,
