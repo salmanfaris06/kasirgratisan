@@ -1,4 +1,4 @@
-import { Wallet, AlertTriangle, Infinity as InfinityIcon, Users as UsersIcon, FileSpreadsheet, type LucideIcon } from 'lucide-react';
+import { Wallet, AlertTriangle, Infinity as InfinityIcon, Users as UsersIcon, FileSpreadsheet, PackageSearch, Sparkles, Cloud, type LucideIcon } from 'lucide-react';
 import { db } from './db';
 
 /**
@@ -28,6 +28,36 @@ export interface WhatsNewFeature {
 }
 
 export const FEATURES: WhatsNewFeature[] = [
+  {
+    id: '2026-06-cloud-backup',
+    title: 'Backup Otomatis ke Cloud',
+    description:
+      'Data toko kini bisa dibackup otomatis ke cloud yang aman — tetap aman walau HP hilang, rusak, atau ganti perangkat. Login dengan akun Google, pilih paket langganan, lalu atur jadwal backup otomatis. Kamu juga bisa restore data langsung dari cloud kapan saja.',
+    icon: Cloud,
+    iconColor: 'text-primary bg-primary/10',
+    publishedAt: '2026-06-11',
+    cta: { label: 'Aktifkan Cloud Backup', to: '/settings/cloud-backup' },
+  },
+  {
+    id: '2026-06-rebrand-freekasir',
+    title: 'Wajah Baru: FreeKasir',
+    description:
+      'Aplikasi ini kini bernama FreeKasir dengan tampilan dan warna baru yang lebih segar. Fungsi & data kamu tetap sama, tidak ada yang berubah. Suka warna lain? Kamu tetap bisa pilih tema favoritmu di Pengaturan → Warna Tema.',
+    icon: Sparkles,
+    iconColor: 'text-primary bg-primary/10',
+    publishedAt: '2026-06-11',
+    cta: { label: 'Ganti Warna Tema', to: '/settings/theme' },
+  },
+  {
+    id: '2026-06-stock-search-scan',
+    title: 'Cari & Scan Produk di Stock In/Out',
+    description:
+      'Input stok kini lebih cepat. Di halaman Stock In dan Stock Out, pilih produk lewat pencarian berdasarkan nama, SKU, atau barcode — lengkap dengan opsi scan kamera seperti di kasir. Kolom Jumlah dan Harga Beli juga otomatis diformat ribuan (10.000) agar mudah dibaca.',
+    icon: PackageSearch,
+    iconColor: 'text-success bg-success/10',
+    publishedAt: '2026-06-10',
+    cta: { label: 'Buka Stock In', to: '/stock-in' },
+  },
   {
     id: '2026-06-export-excel',
     title: 'Export Laporan ke Excel',

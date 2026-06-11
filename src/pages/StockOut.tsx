@@ -14,6 +14,8 @@ import { id } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
 import LockedPage from '@/components/LockedPage';
+import ProductPicker from '@/components/ProductPicker';
+import NumberInput from '@/components/NumberInput';
 
 const REASONS = ['Rusak', 'Hilang', 'Kadaluarsa', 'Retur ke Supplier', 'Pemakaian Sendiri', 'Lainnya'];
 
@@ -65,7 +67,8 @@ export default function StockOutPage() {
     });
 
     await db.products.update(product.id!, {
-      stock: product.stock - qty,
+      // Bulatkan ke 6 desimal untuk menghilangkan artefak floating-point.
+      stock: Math.round((product.stock - qty) * 1e6) / 1e6,
       updatedAt: new Date(),
     });
 
@@ -74,48 +77,42 @@ export default function StockOutPage() {
   };
 
   return (
-    <div className="space-y-4 px-4 pb-4 pt-6">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-start gap-2">
-          <Link to="/settings" className="mt-1 shrink-0">
-            <Button variant="ghost" size="icon" aria-label="Kembali ke pengaturan" className="h-8 w-8 rounded-full"><ChevronLeft className="h-4 w-4" /></Button>
+    <div className="px-4 pt-6 pb-4 space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Link to="/settings">
+            <Button variant="ghost" size="icon" className="h-8 w-8"><ChevronLeft className="w-4 h-4" /></Button>
           </Link>
-          <div className="min-w-0">
-            <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight">
-              <ArrowUpFromLine className="h-5 w-5 text-destructive" />
-              Stock Out
-            </h1>
-            <p className="mt-1 text-xs text-muted-foreground">Catat stok rusak, hilang, retur, atau pemakaian internal.</p>
-          </div>
+          <h1 className="text-xl font-bold flex items-center gap-2">
+            <ArrowUpFromLine className="w-5 h-5 text-destructive" />
+            Stock Out
+          </h1>
         </div>
-        <Button size="sm" onClick={openAdd} className="h-10 gap-1.5 rounded-full px-4 shadow-glow">
-          <Plus className="h-4 w-4" /> Tambah
+        <Button size="sm" onClick={openAdd} className="h-9 gap-1.5">
+          <Plus className="w-4 h-4" /> Tambah
         </Button>
       </div>
 
-      <p className="text-xs font-medium text-muted-foreground">{stockOuts?.length ?? 0} catatan</p>
+      <p className="text-xs text-muted-foreground">{stockOuts?.length ?? 0} catatan</p>
 
       {(!stockOuts || stockOuts.length === 0) ? (
-        <div className="rounded-3xl border border-dashed border-border/80 bg-card/60 px-6 py-12 text-center shadow-soft">
-          <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
-            <ArrowUpFromLine className="h-7 w-7" />
-          </div>
-          <p className="text-sm font-semibold">Belum ada data stock out</p>
-          <p className="mt-1 text-xs text-muted-foreground">Catat stok keluar agar inventori tetap akurat.</p>
+        <div className="text-center py-12">
+          <ArrowUpFromLine className="w-12 h-12 mx-auto text-muted-foreground/30 mb-3" />
+          <p className="text-sm text-muted-foreground">Belum ada data stock out</p>
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {stockOuts.map(so => (
-            <Card key={so.id} className="border-border/70 shadow-soft transition-shadow hover:shadow-card">
-              <CardContent className="p-3.5">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-sm font-semibold">{getProductName(so.productId)}</h3>
+            <Card key={so.id} className="border-0 shadow-sm">
+              <CardContent className="p-3">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold">{getProductName(so.productId)}</h3>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs font-medium bg-destructive/10 text-destructive px-2 py-0.5 rounded">-{so.quantity}</span>
                       <span className="text-xs text-muted-foreground">{so.reason}</span>
                     </div>
-                    {so.notes && <p className="mt-1 line-clamp-2 text-xs italic text-muted-foreground">{so.notes}</p>}
+                    {so.notes && <p className="text-xs text-muted-foreground mt-1 italic">{so.notes}</p>}
                   </div>
                   <p className="text-xs text-muted-foreground">{format(new Date(so.date), 'dd MMM yy', { locale: id })}</p>
                 </div>
@@ -126,20 +123,23 @@ export default function StockOutPage() {
       )}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-[95vw] rounded-2xl sm:max-w-md">
-          <DialogHeader className="border-b border-border/70 pb-3 text-left"><DialogTitle>Tambah Stock Out</DialogTitle></DialogHeader>
+        <DialogContent className="max-w-[95vw] rounded-xl">
+          <DialogHeader><DialogTitle>Tambah Stock Out</DialogTitle></DialogHeader>
           <div className="space-y-4 mt-2">
             <div className="space-y-1.5">
               <Label>Produk *</Label>
-              <Select value={productId} onValueChange={setProductId}>
-                <SelectTrigger className="h-11"><SelectValue placeholder="Pilih produk" /></SelectTrigger>
-                <SelectContent>{products?.filter(p => isStockManaged(p) && p.stock > 0).map(p => <SelectItem key={p.id} value={p.id!.toString()}>{p.name} (stok: {p.stock})</SelectItem>)}</SelectContent>
-              </Select>
+              <ProductPicker
+                products={products ?? []}
+                value={productId}
+                onChange={setProductId}
+                filter={p => isStockManaged(p) && p.stock > 0}
+                showHpp
+              />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Jumlah *</Label>
-                <Input name="stock-out-quantity" autoComplete="off" type="number" inputMode="numeric" value={quantity} onChange={e => setQuantity(e.target.value)} placeholder="1" className="h-11" max={selectedProduct?.stock} />
+                <NumberInput value={quantity} onChange={setQuantity} placeholder="1" className="h-11" decimal />
               </div>
               <div className="space-y-1.5">
                 <Label>Alasan *</Label>
@@ -152,10 +152,10 @@ export default function StockOutPage() {
             {selectedProduct && quantity && (
               <div className="bg-muted/50 p-3 rounded-xl text-sm">
                 <span className="text-muted-foreground">Stok setelah: </span>
-                <span className="font-bold">{selectedProduct.stock - Number(quantity)} {selectedProduct.unit}</span>
+                <span className="font-bold">{Math.round((selectedProduct.stock - Number(quantity)) * 1e6) / 1e6} {selectedProduct.unit}</span>
               </div>
             )}
-            <div className="space-y-1.5"><Label>Catatan</Label><Input name="stock-out-notes" autoComplete="off" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Opsional" className="h-11" /></div>
+            <div className="space-y-1.5"><Label>Catatan</Label><Input value={notes} onChange={e => setNotes(e.target.value)} placeholder="Opsional" className="h-11" /></div>
             <Button className="w-full h-12 text-base font-semibold" onClick={handleSave}>Simpan Stock Out</Button>
           </div>
         </DialogContent>

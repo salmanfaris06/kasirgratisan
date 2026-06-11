@@ -4,8 +4,8 @@ import { db } from '@/lib/db';
 
 // Predefined theme color options with HSL values
 export const THEME_COLORS = [
+  { name: 'Biru', hue: '215', saturation: '100%', lightness: '50%' },
   { name: 'Oranye', hue: '25', saturation: '95%', lightness: '53%' },
-  { name: 'Biru', hue: '217', saturation: '91%', lightness: '60%' },
   { name: 'Hijau', hue: '142', saturation: '71%', lightness: '45%' },
   { name: 'Ungu', hue: '262', saturation: '83%', lightness: '58%' },
   { name: 'Merah', hue: '0', saturation: '84%', lightness: '60%' },
@@ -38,7 +38,7 @@ export function useThemeColor() {
     }
   }, [storeSettings?.themeColor]);
 
-  return storeSettings?.themeColor ?? '25';
+  return storeSettings?.themeColor ?? '215';
 }
 
 export async function setThemeColor(hue: string) {

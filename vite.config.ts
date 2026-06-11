@@ -20,12 +20,12 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "kasirgratisan-icon.png", "og-image.png"],
       manifest: {
-        name: "KasirGratisan - POS UMKM Gratis",
-        short_name: "KasirGratisan",
+        name: "FreeKasir - POS UMKM Gratis",
+        short_name: "FreeKasir",
         description: "Aplikasi kasir gratis untuk UMKM Indonesia. Offline & tanpa biaya.",
         start_url: "/",
         display: "standalone",
-        background_color: "#0F172A",
+        background_color: "#FFFFFF",
         theme_color: "#F97316",
         orientation: "any",
         icons: [

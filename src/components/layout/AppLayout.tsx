@@ -4,12 +4,15 @@ import { db, seedDefaultData } from '@/lib/db';
 import { useEffect } from 'react';
 import BottomNav from './BottomNav';
 import { useThemeColor } from '@/hooks/use-theme-color';
+import { useCloudAutoBackup } from '@/hooks/use-cloud-auto-backup';
 import Onboarding from '@/components/Onboarding';
 import LoginScreen from '@/components/LoginScreen';
+import PushPermissionModal from '@/components/PushPermissionModal';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function AppLayout() {
   useThemeColor(); // Apply saved theme color on mount
+  useCloudAutoBackup(); // Auto cloud backup on app open (if enabled & subscribed)
   const { multiUserEnabled, currentUser, loading } = useAuth();
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export default function AppLayout() {
         <Outlet />
       </main>
       <BottomNav />
+      <PushPermissionModal />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.kasirgratisan.app',
-  appName: 'KasirGratisan',
+  appId: 'com.freekasir.app',
+  appName: 'FreeKasir',
   webDir: 'dist',
   android: {
     allowMixedContent: true,
@@ -10,13 +10,13 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchShowDuration: 1000,
-      backgroundColor: '#0F172A',
+      backgroundColor: '#FFFFFF',
       showSpinner: false,
     },
     StatusBar: {
       overlaysWebView: false,
-      style: 'DARK',
-      backgroundColor: '#F97316',
+      style: 'LIGHT',
+      backgroundColor: '#0169ff',
     },
   },
 };

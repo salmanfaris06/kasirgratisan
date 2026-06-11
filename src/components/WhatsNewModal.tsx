@@ -83,7 +83,7 @@ export default function WhatsNewModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Sparkles className="w-4 h-4 text-primary" />
-            Yang Baru di KasirGratisan
+            Yang Baru di FreeKasir
           </DialogTitle>
         </DialogHeader>
 

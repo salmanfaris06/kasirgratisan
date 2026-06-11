@@ -1,4 +1,4 @@
-# 🧾 KasirGratisan
+# 🧾 FreeKasir
 
 A free, offline-first, open source Point of Sale (POS) Progressive Web App built for Indonesian Micro, Small, and Medium Enterprises (UMKM). All data is stored locally on the user's device — no server, no registration, no cost.
 
@@ -215,7 +215,7 @@ Join the Telegram group to discuss the app, ask questions, and share tips with o
 
 ## ☕ Support the Developer
 
-KasirGratisan is built and maintained for free. If you find it useful, you can buy the developer a coffee to support continued development:
+FreeKasir is built and maintained for free. If you find it useful, you can buy the developer a coffee to support continued development:
 
 👉 **[traktir.jipraks.com](https://traktir.jipraks.com/)**
 

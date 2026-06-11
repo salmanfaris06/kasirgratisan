@@ -54,7 +54,7 @@ export default function LoginScreen() {
               <Store className="w-8 h-8" />
             )}
           </div>
-          <h1 className="text-xl font-bold">{storeSettings?.storeName || 'KasirGratisan'}</h1>
+          <h1 className="text-xl font-bold">{storeSettings?.storeName || 'FreeKasir'}</h1>
           <p className="text-xs text-muted-foreground mt-1">Masuk untuk melanjutkan</p>
         </div>
 

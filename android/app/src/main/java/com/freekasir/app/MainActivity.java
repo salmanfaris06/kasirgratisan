@@ -1,4 +1,4 @@
-package com.kasirgratisan.app;
+package com.freekasir.app;
 
 import android.Manifest;
 import android.os.Build;
