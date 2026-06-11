@@ -32,7 +32,7 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="relative mx-auto min-h-screen max-w-lg overflow-x-hidden bg-background/85 md:max-w-6xl">
+    <div className="relative mx-auto min-h-screen max-w-lg overflow-visible bg-background/85 md:max-w-6xl">
       <main className="relative z-10 pb-24">
         <Outlet />
       </main>
