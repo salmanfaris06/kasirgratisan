@@ -21,7 +21,9 @@ export function createShiftCode(date = new Date(), sequence = 1): string {
 }
 
 export function validateOpeningCash(raw: string): ValidationResult {
-  const value = Number(raw);
+  const trimmed = raw.trim();
+  if (!trimmed) return { ok: false, error: 'Modal awal wajib diisi' };
+  const value = Number(trimmed);
   if (!Number.isFinite(value)) return { ok: false, error: 'Modal awal harus berupa angka' };
   if (!Number.isInteger(value)) return { ok: false, error: 'Modal awal harus berupa angka Rupiah utuh' };
   if (value < 0) return { ok: false, error: 'Modal awal tidak boleh negatif' };
@@ -64,8 +66,21 @@ export function getCloseShiftTotals({
   };
 }
 
+export function selectLatestOpenShift(shifts: CashierShift[]): CashierShift | undefined {
+  return [...shifts]
+    .filter((shift) => shift.status === 'open')
+    .sort((a, b) => new Date(b.openedAt).getTime() - new Date(a.openedAt).getTime())[0];
+}
+
+export function findDuplicateActiveShifts(shifts: CashierShift[]): CashierShift[] {
+  const openShifts = shifts.filter((shift) => shift.status === 'open');
+  const latest = selectLatestOpenShift(openShifts);
+  return openShifts.filter((shift) => shift.id !== latest?.id);
+}
+
 export async function getActiveShift(): Promise<CashierShift | undefined> {
-  return db.cashierShifts.where('status').equals('open').first();
+  const openShifts = await db.cashierShifts.where('status').equals('open').toArray();
+  return selectLatestOpenShift(openShifts);
 }
 
 export async function getNextShiftCode(date = new Date()): Promise<string> {

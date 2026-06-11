@@ -619,7 +619,7 @@ class PosDatabase extends Dexie {
       users:             '++id, &username, role, isActive',
       expenseCategories: '++id, name, isDeleted',
       expenses:          '++id, date, categoryId, paymentMethodId, createdBy, isDeleted',
-      cashierShifts:     '++id, code, status, openedAt, closedAt, openedBy, closedBy',
+      cashierShifts:     '++id, &code, status, openedAt, closedAt, openedBy, closedBy',
     });
   }
 }

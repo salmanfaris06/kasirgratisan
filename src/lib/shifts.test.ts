@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import type { PaymentMethod, Transaction } from './db';
+import type { CashierShift, PaymentMethod, Transaction } from './db';
 import {
   calculateShiftSummary,
   createShiftCode,
+  findDuplicateActiveShifts,
   getCloseShiftTotals,
+  selectLatestOpenShift,
   validateOpeningCash,
 } from './shifts';
 
@@ -35,8 +37,10 @@ describe('shift helpers', () => {
   });
 
   it('validates opening cash as non-negative integer rupiah', () => {
-    expect(validateOpeningCash('100000')).toEqual({ ok: true, value: 100000 });
+    expect(validateOpeningCash(' 100000 ')).toEqual({ ok: true, value: 100000 });
     expect(validateOpeningCash('0')).toEqual({ ok: true, value: 0 });
+    expect(validateOpeningCash('')).toEqual({ ok: false, error: 'Modal awal wajib diisi' });
+    expect(validateOpeningCash('   ')).toEqual({ ok: false, error: 'Modal awal wajib diisi' });
     expect(validateOpeningCash('-1')).toEqual({ ok: false, error: 'Modal awal tidak boleh negatif' });
     expect(validateOpeningCash('1000.5')).toEqual({ ok: false, error: 'Modal awal harus berupa angka Rupiah utuh' });
   });
@@ -57,6 +61,73 @@ describe('shift helpers', () => {
       cashSales: 50000,
       nonCashSales: 75000,
     });
+  });
+
+  it('treats unknown payment methods as non-cash for closing purposes', () => {
+    const summary = calculateShiftSummary(
+      [baseTx({ id: 4, total: 25000, paymentMethodId: 999, status: 'completed' })],
+      methods,
+    );
+
+    expect(summary).toEqual({
+      totalSales: 25000,
+      totalTransactions: 1,
+      cashSales: 0,
+      nonCashSales: 25000,
+    });
+  });
+
+  it('selects the latest open shift deterministically and surfaces duplicate active shifts', () => {
+    const shifts: CashierShift[] = [
+      {
+        id: 1,
+        code: 'SHIFT-20260611-001',
+        status: 'open',
+        openedAt: new Date('2026-06-11T08:00:00'),
+        closedAt: null,
+        openingCash: 100000,
+        countedCash: null,
+        expectedCash: null,
+        cashDifference: null,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+      {
+        id: 2,
+        code: 'SHIFT-20260611-002',
+        status: 'open',
+        openedAt: new Date('2026-06-11T10:00:00'),
+        closedAt: null,
+        openingCash: 50000,
+        countedCash: null,
+        expectedCash: null,
+        cashDifference: null,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+      {
+        id: 3,
+        code: 'SHIFT-20260610-001',
+        status: 'closed',
+        openedAt: new Date('2026-06-10T08:00:00'),
+        closedAt: new Date('2026-06-10T17:00:00'),
+        openingCash: 50000,
+        countedCash: 50000,
+        expectedCash: 50000,
+        cashDifference: 0,
+        totalSales: 0,
+        totalTransactions: 0,
+        cashSales: 0,
+        nonCashSales: 0,
+      },
+    ];
+
+    expect(selectLatestOpenShift(shifts)?.id).toBe(2);
+    expect(findDuplicateActiveShifts(shifts).map((shift) => shift.id)).toEqual([1]);
   });
 
   it('calculates expected cash and cash difference on close', () => {
